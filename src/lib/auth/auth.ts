@@ -11,6 +11,10 @@ export const auth = betterAuth({
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 days
     updateAge: 60 * 60 * 24, // refresh every 24h
+    cookieCache: {
+      enabled: true, // Enable caching session in cookie (default: `false`)
+      maxAge: 60 * 60 * 24 * 2, // 2 days
+    },
   },
   socialProviders: {
     //https://www.better-auth.com/docs/authentication/google
