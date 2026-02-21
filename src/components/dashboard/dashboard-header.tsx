@@ -22,9 +22,9 @@ export function DasboardHeader() {
   } = authClient.useSession();
 
   const user: NavUserType = {
-    name: session?.user.name!,
-    email: session?.user.email!,
-    avatar: session?.user.image!,
+    name: session?.user.name || "",
+    email: session?.user.email || "",
+    avatar: session?.user.image || "",
   };
 
   return (

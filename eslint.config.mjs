@@ -14,6 +14,18 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     "src/app/globals.css",
   ]),
+  {
+    rules: {
+      // "@typescript-eslint/no-explicit-any": "off",
+      // "react-hooks/rules-of-hooks": "warn",
+      // "react-hooks/exhaustive-deps": "warn",
+      // "@typescript-eslint/no-unused-vars": [
+      //   "off",
+      //   { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      // ],
+      // "@typescript-eslint/no-non-null-asserted-optional-chain": "warn",
+    },
+  },
 ]);
 
 export default eslintConfig;

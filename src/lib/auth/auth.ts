@@ -8,6 +8,10 @@ export const auth = betterAuth({
   //   enabled: true,
   //   // autoSignIn: false //defaults to true
   // },
+  session: {
+    expiresIn: 60 * 60 * 24 * 7, // 7 days
+    updateAge: 60 * 60 * 24, // refresh every 24h
+  },
   socialProviders: {
     //https://www.better-auth.com/docs/authentication/google
     //https://console.cloud.google.com/apis/dashboard
