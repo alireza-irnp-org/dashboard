@@ -1,6 +1,10 @@
-// import { ComponentExample } from "@/components/component-example";
+import { ComponentExample } from "@/components/component-example";
 import Dashboard from "@/components/dashboard/dashboard-layout";
 
 export default function Page() {
-return <Dashboard />;
+  return (
+    <Dashboard>
+      <ComponentExample />
+    </Dashboard>
+  );
 }
