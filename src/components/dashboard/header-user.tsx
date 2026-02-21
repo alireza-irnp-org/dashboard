@@ -10,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+// } from "@/components/animate-ui/components/radix/dropdown-menu";
 import { useSignOut } from "@/lib/auth/actions/sign-out";
 import {
   SparklesIcon,
@@ -71,7 +72,7 @@ export function HeaderUserDropdown({ user }: { user: NavUserType }) {
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem >
             <SparklesIcon className="mr-2 h-4 w-4" />
             Upgrade to Pro
           </DropdownMenuItem>

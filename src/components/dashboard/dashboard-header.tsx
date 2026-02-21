@@ -3,7 +3,9 @@
 // import ENVConfig from "@/../config";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarTrigger 
+} from "@/components/ui/sidebar";
+// } from "@/components/animate-ui/components/radix/sidebar";
 import Link from "next/link";
 import { ThemeToggle } from "../theme-toggle";
 import { BreadcrumbDemo } from "./header-breadcrumbs";

@@ -17,6 +17,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+// } from "@/components/animate-ui/components/radix/sidebar";
 import { ChevronsUpDownIcon, PlusIcon } from "lucide-react";
 
 export interface TeamSwitcherType {

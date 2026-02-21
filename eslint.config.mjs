@@ -24,6 +24,8 @@ const eslintConfig = defineConfig([
       //   { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       // ],
       // "@typescript-eslint/no-non-null-asserted-optional-chain": "warn",
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "off",
     },
   },
 ]);

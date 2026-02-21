@@ -1,5 +1,7 @@
 import { AppSidebar } from "@/components/dashboard/app-sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider 
+} from "@/components/ui/sidebar";
+// } from "@/components/animate-ui/components/radix/sidebar";
 import { DasboardHeader } from "./dashboard-header";
 
 export default function DashboardLayout({

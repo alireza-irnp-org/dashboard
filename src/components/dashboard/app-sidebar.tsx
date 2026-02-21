@@ -11,7 +11,8 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar";
+  } from "@/components/ui/sidebar";
+// } from "@/components/animate-ui/components/radix/sidebar";
 import { navMainExample } from "@/lib/constants/nav-main-items";
 // import { navProjectsExample } from "@/lib/constants/nav-projects-items";
 import { teamSwitcherExample } from "@/lib/constants/team-switcher-items";

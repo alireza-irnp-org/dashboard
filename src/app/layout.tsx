@@ -31,7 +31,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <TooltipProvider>
+        <TooltipProvider delayDuration={10}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
