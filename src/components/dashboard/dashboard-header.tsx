@@ -1,3 +1,5 @@
+"use client";
+
 // import ENVConfig from "@/../config";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -9,14 +11,22 @@ import { HeaderUserDropdown } from "./header-user";
 import { NavUserType } from "./nav-user";
 import { cn } from "@/lib/utils";
 // import { CommandMenu } from "./command-menu";
-
-const user: NavUserType = {
-  name: "shadcn",
-  email: "m@example.com",
-  avatar: "/avatars/shadcn.jpg",
-};
+import { authClient } from "@/lib/auth/auth-client";
 
 export function DasboardHeader() {
+  const {
+    data: session,
+    isPending, //loading state
+    error, //error object
+    refetch, //refetch the session
+  } = authClient.useSession();
+
+  const user: NavUserType = {
+    name: session?.user.name!,
+    email: session?.user.email!,
+    avatar: session?.user.image!,
+  };
+
   return (
     // <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
     <header
