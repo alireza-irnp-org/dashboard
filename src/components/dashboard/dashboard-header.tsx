@@ -24,7 +24,7 @@ export function DasboardHeader() {
   const user: NavUserType = {
     name: session?.user.name || "",
     email: session?.user.email || "",
-    avatar: session?.user.image || "",
+    avatar: session?.user.image || "avatar",
   };
 
   return (
