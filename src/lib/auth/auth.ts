@@ -1,9 +1,16 @@
 import { betterAuth } from "better-auth";
 // import Database from "better-sqlite3";
+import { db } from "@/lib/db/index";
+import * as schema from "@/lib/db/schema";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 
 export const auth = betterAuth({
   // database: new Database("./sqlite.db"),
+  database: drizzleAdapter(db, {
+    provider: "pg", // or "pg" or "mysql"
+    schema,
+  }),
   // emailAndPassword: {
   //   enabled: true,
   //   // autoSignIn: false //defaults to true

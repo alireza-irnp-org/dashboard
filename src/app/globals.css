@@ -124,3 +124,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.soft-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}

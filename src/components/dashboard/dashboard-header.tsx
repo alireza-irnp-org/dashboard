@@ -3,15 +3,14 @@
 // import ENVConfig from "@/../config";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { SidebarTrigger 
-} from "@/components/ui/sidebar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 // } from "@/components/animate-ui/components/radix/sidebar";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { ThemeToggle } from "../theme-toggle";
 import { BreadcrumbDemo } from "./header-breadcrumbs";
 import { HeaderUserDropdown } from "./header-user";
 import { NavUserType } from "./nav-user";
-import { cn } from "@/lib/utils";
 // import { CommandMenu } from "./command-menu";
 import { authClient } from "@/lib/auth/auth-client";
 
@@ -57,7 +56,7 @@ export function DasboardHeader() {
             </Link>
           </Button>
           <ThemeToggle />
-          <HeaderUserDropdown user={user} />
+          <HeaderUserDropdown user={user} isPending={isPending} />
         </div>
       </div>
     </header>

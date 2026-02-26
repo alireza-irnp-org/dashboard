@@ -1,0 +1,10 @@
+Generate betterauth schema
+ - pnpm dlx @better-auth/cli@latest generate --config ./src/lib/auth/auth.ts
+
+pnpm tsx src\lib\db\index.ts
+
+Generate migrations:
+ - npx drizzle-kit generate
+
+Apply migrations:
+ - npx drizzle-kit migrate

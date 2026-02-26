@@ -11,13 +11,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 // } from "@/components/animate-ui/components/radix/dropdown-menu";
+import { Spinner } from "@/components/ui/spinner";
 import { useSignOut } from "@/lib/auth/actions/sign-out";
 import {
-  SparklesIcon,
   BadgeCheckIcon,
-  CreditCardIcon,
   BellIcon,
+  CreditCardIcon,
   LogOutIcon,
+  SparklesIcon,
 } from "lucide-react";
 
 export interface NavUserType {
@@ -26,7 +27,13 @@ export interface NavUserType {
   avatar: string;
 }
 
-export function HeaderUserDropdown({ user }: { user: NavUserType }) {
+export function HeaderUserDropdown({
+  user,
+  isPending,
+}: {
+  user: NavUserType;
+  isPending: boolean;
+}) {
   const signOut = useSignOut();
 
   const userInitials = user.name
@@ -40,11 +47,23 @@ export function HeaderUserDropdown({ user }: { user: NavUserType }) {
     <DropdownMenu>
       <DropdownMenuTrigger
         asChild
-        className="cursor-pointer transition-opacity duration-200 hover:opacity-50 data-[state=open]:opacity-50"
+        className="cursor-pointer transition-opacity duration-200 hover:opacity-80 data-[state=open]:opacity-80"
       >
-        <Avatar className="h-8 w-8 rounded-lg">
+        {/* <Avatar className="h-8 w-8 rounded-lg">
           <AvatarImage src={user.avatar} alt={user.name} />
           <AvatarFallback className="rounded-lg">{userInitials}</AvatarFallback>
+        </Avatar> */}
+        <Avatar className="relative h-8 w-8 rounded-full">
+          {isPending ? (
+            <div className="soft-pulse bg-background absolute inset-0 rounded-full" />
+          ) : (
+            <>
+              <AvatarImage src={user.avatar} alt={user.name} />
+              <AvatarFallback className="rounded-full">
+                {userInitials}
+              </AvatarFallback>
+            </>
+          )}
         </Avatar>
       </DropdownMenuTrigger>
 
@@ -56,11 +75,23 @@ export function HeaderUserDropdown({ user }: { user: NavUserType }) {
       >
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-2 py-1.5 text-left text-sm">
-            <Avatar className="h-8 w-8 rounded-lg">
+            {/* <Avatar className="h-8 w-8 rounded-lg">
               <AvatarImage src={user.avatar} alt={user.name} />
               <AvatarFallback className="rounded-lg">
                 {userInitials}
               </AvatarFallback>
+            </Avatar> */}
+            <Avatar className="relative h-8 w-8 rounded-full">
+              {isPending ? (
+                <div className="soft-pulse bg-background absolute inset-0 rounded-full" />
+              ) : (
+                <>
+                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarFallback className="rounded-full">
+                    {userInitials}
+                  </AvatarFallback>
+                </>
+              )}
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium">{user.name}</span>
@@ -72,7 +103,7 @@ export function HeaderUserDropdown({ user }: { user: NavUserType }) {
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
-          <DropdownMenuItem >
+          <DropdownMenuItem>
             <SparklesIcon className="mr-2 h-4 w-4" />
             Upgrade to Pro
           </DropdownMenuItem>
