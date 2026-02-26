@@ -3,6 +3,7 @@ import {
   ComposerAttachments,
   UserMessageAttachments,
 } from "@/components/assistant-ui/attachment";
+import { File } from "@/components/assistant-ui/file";
 import { MarkdownText } from "@/components/assistant-ui/markdown-text";
 import { Sources } from "@/components/assistant-ui/sources";
 import { ToolFallback } from "@/components/assistant-ui/tool-fallback";
@@ -43,7 +44,7 @@ export const Thread: FC = () => {
     <ThreadPrimitive.Root
       className="aui-root aui-thread-root bg-background @container flex h-full flex-col text-[13px]"
       style={{
-        ["--thread-max-width" as string]: "44rem",
+        ["--thread-max-width" as string]: "50rem",
         // fontFamily: "GeistSans, sans-serif",
       }}
     >
@@ -63,14 +64,14 @@ export const Thread: FC = () => {
           }}
         />
 
-        {/* <ThreadPrimitive.ViewportFooter className="aui-thread-viewport-footer bg-background sticky bottom-0 mx-auto mt-auto flex w-full max-w-(--thread-max-width) flex-col gap-4 overflow-visible rounded-t-3xl pb-4 md:pb-6">
-          <ThreadScrollToBottom />
-          <Composer />
-        </ThreadPrimitive.ViewportFooter> */}
-        <ThreadPrimitive.ViewportFooter className="aui-thread-viewport-footer bg-background/80 before:from-background before:via-background/90 sticky bottom-0 mx-auto mt-auto flex w-full max-w-(--thread-max-width) flex-col gap-4 overflow-visible rounded-t-3xl pb-4 before:pointer-events-none before:absolute before:inset-x-0 before:bottom-0 before:h-20 before:bg-linear-to-t before:to-transparent md:pb-6">
+        <ThreadPrimitive.ViewportFooter className="aui-thread-viewport-footer bg-background/50 sticky bottom-0 mx-auto mt-auto flex w-full max-w-(--thread-max-width) flex-col gap-4 overflow-visible rounded-t-3xl pb-4 md:pb-6">
           <ThreadScrollToBottom />
           <Composer />
         </ThreadPrimitive.ViewportFooter>
+        {/* <ThreadPrimitive.ViewportFooter className="aui-thread-viewport-footer bg-background/10 before:from-background before:via-background/90 sticky bottom-0 mx-auto mt-auto flex w-full max-w-(--thread-max-width) flex-col gap-4 overflow-visible rounded-t-3xl pb-4 before:pointer-events-none before:absolute before:inset-x-0 before:bottom-0 before:h-20 before:bg-linear-to-t before:to-transparent md:pb-6">
+          <ThreadScrollToBottom />
+          <Composer />
+        </ThreadPrimitive.ViewportFooter> */}
       </ThreadPrimitive.Viewport>
     </ThreadPrimitive.Root>
   );
@@ -144,7 +145,7 @@ const Composer: FC = () => {
   return (
     <ComposerPrimitive.Root className="aui-composer-root relative flex w-full flex-col">
       {/* <ComposerPrimitive.AttachmentDropzone className="aui-composer-attachment-dropzone border-input bg-background has-[textarea:focus-visible]:border-ring has-[textarea:focus-visible]:ring-ring/20 data-[dragging=true]:border-ring data-[dragging=true]:bg-accent/50 flex w-full flex-col rounded-2xl border px-1 pt-2 transition-shadow outline-none has-[textarea:focus-visible]:ring-2 data-[dragging=true]:border-dashed"> */}
-      <ComposerPrimitive.AttachmentDropzone className="aui-composer-attachment-dropzone border-input bg-input/60 has-[textarea:focus-visible]:ring-ring/0 data-[dragging=true]:border-ring data-[dragging=true]:bg-accent/50 flex w-full flex-col rounded-2xl border-none px-1 pt-2 backdrop-blur-md transition-shadow outline-none has-[textarea:focus-visible]:ring-2 data-[dragging=true]:border-dashed">
+      <ComposerPrimitive.AttachmentDropzone className="aui-composer-attachment-dropzone shadow-[0_0_40px_-10px_rgba(99,102,241,0.35)] border-muted dark:border-muted bg-muted/50 dark:bg-card/10 has-[textarea:focus-visible]:ring-ring/0 data-[dragging=true]:border-ring data-[dragging=true]:bg-accent/50 flex w-full flex-col rounded-2xl border-2 px-1 pt-2 backdrop-blur-md transition-shadow outline-none has-[textarea:focus-visible]:ring-2 data-[dragging=true]:border-dashed">
         <ComposerAttachments />
         <ComposerPrimitive.Input
           placeholder="Send a message..."
@@ -250,6 +251,7 @@ const AssistantMessage: FC = () => {
             Text: MarkdownText,
             tools: { Fallback: ToolFallback },
             Source: Sources,
+            File,
           }}
         />
         <MessageError />

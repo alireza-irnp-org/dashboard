@@ -47,6 +47,30 @@ const CodeHeader: FC<CodeHeaderProps> = ({ language, code }) => {
   );
 };
 
+const TableHeader: FC<{ tableRef: React.RefObject<HTMLTableElement> }> = ({
+  tableRef,
+}) => {
+  const { isCopied, copyToClipboard } = useCopyToClipboard();
+
+  const onCopy = () => {
+    if (!tableRef.current || isCopied) return;
+
+    const html = tableRef.current.outerHTML;
+    copyToClipboard(html);
+  };
+
+  return (
+    <div className="aui-table-header-root border-border/50 bg-muted/50 mt-2.5 flex items-center justify-between rounded-t-lg border border-b-0 px-3 py-1.5 text-xs">
+      <span className="text-muted-foreground font-medium lowercase">table</span>
+
+      <TooltipIconButton tooltip="Copy" onClick={onCopy}>
+        {!isCopied && <CopyIcon />}
+        {isCopied && <CheckIcon />}
+      </TooltipIconButton>
+    </div>
+  );
+};
+
 const useCopyToClipboard = ({
   copiedDuration = 3000,
 }: {
@@ -173,14 +197,25 @@ const defaultComponents = memoizeMarkdownComponents({
       {...props}
     />
   ),
+  // table: ({ className, ...props }) => (
+  //   <table
+  //     className={cn(
+  //       "aui-md-table my-2 w-full border-separate border-spacing-0 overflow-y-auto",
+  //       className,
+  //     )}
+  //     {...props}
+  //   />
+  // ),
   table: ({ className, ...props }) => (
-    <table
-      className={cn(
-        "aui-md-table my-2 w-full border-separate border-spacing-0 overflow-y-auto",
-        className,
-      )}
-      {...props}
-    />
+    <div className="aui-md-table-wrapper my-2 w-full overflow-x-auto">
+      <table
+        className={cn(
+          "aui-md-table w-full border-separate border-spacing-0",
+          className,
+        )}
+        {...props}
+      />
+    </div>
   ),
   th: ({ className, ...props }) => (
     <th
