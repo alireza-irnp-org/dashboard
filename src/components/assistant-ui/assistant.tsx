@@ -16,11 +16,15 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { AssistantRuntimeProvider } from "@assistant-ui/react";
+import {
+  AssistantRuntimeProvider,
+  WebSpeechDictationAdapter,
+} from "@assistant-ui/react";
 import {
   AssistantChatTransport,
   useChatRuntime,
 } from "@assistant-ui/react-ai-sdk";
+import { DevToolsModal } from "@assistant-ui/react-devtools";
 import { lastAssistantMessageIsCompleteWithToolCalls } from "ai";
 
 export const Assistant = () => {
@@ -29,10 +33,19 @@ export const Assistant = () => {
     transport: new AssistantChatTransport({
       api: "/api/chat",
     }),
+    adapters: {
+      dictation: new WebSpeechDictationAdapter({
+        // Optional configuration
+        language: "en-US", // Language for recognition (default: browser language)
+        continuous: true, // Keep recording after user stops (default: true)
+        interimResults: false, // Return interim results (default: true)
+      }),
+    },
   });
 
   return (
     <AssistantRuntimeProvider runtime={runtime}>
+      <DevToolsModal />
       <SidebarProvider>
         <div className="flex h-dvh w-full pr-0.5">
           <ThreadListSidebar />

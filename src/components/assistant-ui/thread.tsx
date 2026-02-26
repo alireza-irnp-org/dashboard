@@ -4,6 +4,7 @@ import {
   UserMessageAttachments,
 } from "@/components/assistant-ui/attachment";
 import { MarkdownText } from "@/components/assistant-ui/markdown-text";
+import { Sources } from "@/components/assistant-ui/sources";
 import { ToolFallback } from "@/components/assistant-ui/tool-fallback";
 import { TooltipIconButton } from "@/components/assistant-ui/tooltip-icon-button";
 import { Button } from "@/components/ui/button";
@@ -27,19 +28,23 @@ import {
   ChevronRightIcon,
   CopyIcon,
   DownloadIcon,
+  MicIcon,
   MoreHorizontalIcon,
   PencilIcon,
   RefreshCwIcon,
+  Square,
   SquareIcon,
+  Volume2Icon,
 } from "lucide-react";
 import type { FC } from "react";
 
 export const Thread: FC = () => {
   return (
     <ThreadPrimitive.Root
-      className="aui-root aui-thread-root bg-background @container flex h-full flex-col"
+      className="aui-root aui-thread-root bg-background @container flex h-full flex-col text-[13px]"
       style={{
         ["--thread-max-width" as string]: "44rem",
+        // fontFamily: "GeistSans, sans-serif",
       }}
     >
       <ThreadPrimitive.Viewport
@@ -62,7 +67,7 @@ export const Thread: FC = () => {
           <ThreadScrollToBottom />
           <Composer />
         </ThreadPrimitive.ViewportFooter> */}
-        <ThreadPrimitive.ViewportFooter className="aui-thread-viewport-footer bg-background/30 before:from-background before:via-background/90 sticky bottom-0 mx-auto mt-auto flex w-full max-w-(--thread-max-width) flex-col gap-4 overflow-visible rounded-t-3xl pb-4 before:pointer-events-none before:absolute before:inset-x-0 before:bottom-0 before:h-20 before:bg-linear-to-t before:to-transparent md:pb-6">
+        <ThreadPrimitive.ViewportFooter className="aui-thread-viewport-footer bg-background/80 before:from-background before:via-background/90 sticky bottom-0 mx-auto mt-auto flex w-full max-w-(--thread-max-width) flex-col gap-4 overflow-visible rounded-t-3xl pb-4 before:pointer-events-none before:absolute before:inset-x-0 before:bottom-0 before:h-20 before:bg-linear-to-t before:to-transparent md:pb-6">
           <ThreadScrollToBottom />
           <Composer />
         </ThreadPrimitive.ViewportFooter>
@@ -139,7 +144,7 @@ const Composer: FC = () => {
   return (
     <ComposerPrimitive.Root className="aui-composer-root relative flex w-full flex-col">
       {/* <ComposerPrimitive.AttachmentDropzone className="aui-composer-attachment-dropzone border-input bg-background has-[textarea:focus-visible]:border-ring has-[textarea:focus-visible]:ring-ring/20 data-[dragging=true]:border-ring data-[dragging=true]:bg-accent/50 flex w-full flex-col rounded-2xl border px-1 pt-2 transition-shadow outline-none has-[textarea:focus-visible]:ring-2 data-[dragging=true]:border-dashed"> */}
-      <ComposerPrimitive.AttachmentDropzone className="aui-composer-attachment-dropzone border-input bg-background/10 has-[textarea:focus-visible]:ring-ring/10 data-[dragging=true]:border-ring data-[dragging=true]:bg-accent/50 flex w-full flex-col rounded-2xl border px-1 pt-2 backdrop-blur-lg transition-shadow outline-none has-[textarea:focus-visible]:ring-2 data-[dragging=true]:border-dashed">
+      <ComposerPrimitive.AttachmentDropzone className="aui-composer-attachment-dropzone border-input bg-input/60 has-[textarea:focus-visible]:ring-ring/0 data-[dragging=true]:border-ring data-[dragging=true]:bg-accent/50 flex w-full flex-col rounded-2xl border-none px-1 pt-2 backdrop-blur-md transition-shadow outline-none has-[textarea:focus-visible]:ring-2 data-[dragging=true]:border-dashed">
         <ComposerAttachments />
         <ComposerPrimitive.Input
           placeholder="Send a message..."
@@ -157,13 +162,46 @@ const Composer: FC = () => {
 const ComposerAction: FC = () => {
   return (
     <div className="aui-composer-action-wrapper relative mx-2 mb-2 flex items-center justify-between">
-      <ComposerAddAttachment />
+      <div className="flex items-center gap-1">
+        <ComposerAddAttachment />
+
+        {/* Dictation Button - Show when not dictation */}
+        <ComposerPrimitive.If dictation={false}>
+          <ComposerPrimitive.Dictate asChild>
+            <TooltipIconButton
+              tooltip="Voice input"
+              side="top"
+              variant="ghost"
+              className="aui-composer-dictate size-[34px] rounded-full p-1"
+              aria-label="Start voice input"
+            >
+              <MicIcon className="size-5" />
+            </TooltipIconButton>
+          </ComposerPrimitive.Dictate>
+        </ComposerPrimitive.If>
+
+        {/* Stop Dictation Button - Show when dictation */}
+        <ComposerPrimitive.If dictation>
+          <ComposerPrimitive.StopDictation asChild>
+            <TooltipIconButton
+              tooltip="Stop dictation"
+              side="top"
+              variant="default"
+              className="aui-composer-stop-dictation size-[34px] rounded-full p-1"
+              aria-label="Stop voice input"
+            >
+              <Square className="size-4 animate-pulse fill-current" />
+            </TooltipIconButton>
+          </ComposerPrimitive.StopDictation>
+        </ComposerPrimitive.If>
+      </div>
+
       <AuiIf condition={(s) => !s.thread.isRunning}>
         <ComposerPrimitive.Send asChild>
           <TooltipIconButton
             tooltip="Send message"
             side="bottom"
-            type="submit"
+            type="button"
             variant="default"
             size="icon"
             className="aui-composer-send size-8 rounded-full"
@@ -211,6 +249,7 @@ const AssistantMessage: FC = () => {
           components={{
             Text: MarkdownText,
             tools: { Fallback: ToolFallback },
+            Source: Sources,
           }}
         />
         <MessageError />
@@ -247,6 +286,11 @@ const AssistantActionBar: FC = () => {
           <RefreshCwIcon />
         </TooltipIconButton>
       </ActionBarPrimitive.Reload>
+      {/* <ActionBarPrimitive.Speak asChild>
+        <TooltipIconButton tooltip="Read aloud">
+          <Volume2Icon />
+        </TooltipIconButton>
+      </ActionBarPrimitive.Speak> */}
       <ActionBarMorePrimitive.Root>
         <ActionBarMorePrimitive.Trigger asChild>
           <TooltipIconButton

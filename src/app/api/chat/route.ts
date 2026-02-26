@@ -10,15 +10,18 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
   const { messages }: { messages: UIMessage[] } = await req.json();
 
-  //   const azure = createAzure({
-  //     resourceName: process.env.AZURE_OPENAI_RESOURCE_NAME,
-  //     apiKey: process.env.AZURE_API_KEY,
-  //   });
+  const customAzure = createAzure({
+    resourceName: process.env.AZURE_GPT5_RESOURCE_NAME,
+    // apiVersion: process.env.AZURE_GPT5_API_VERSION,
+    apiKey: process.env.AZURE_GPT5_API_KEY!,
+    // Connection reuse is handled automatically by the SDK and underlying fetch
+  });
 
   const result = streamText({
     // model: openai("gpt-4o"),
     // model: azure(process.env.AZURE_OPENAI_ENDPOINT!),
-    model: google("gemini-2.5-flash"),
+    // model: google("gemini-2.5-flash"),
+    model: customAzure("gpt-5.2"),
     messages: await convertToModelMessages(messages), // Note: async in v6
     tools: {
       get_current_weather: tool({
