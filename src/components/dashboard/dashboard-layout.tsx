@@ -3,6 +3,7 @@ import { SidebarInset, SidebarProvider
 } from "@/components/ui/sidebar";
 // } from "@/components/animate-ui/components/radix/sidebar";
 import { DasboardHeader } from "./dashboard-header";
+import { AssistantModal } from "../assistant-ui/assistant-modal";
 
 export default function DashboardLayout({
   children,
@@ -32,6 +33,7 @@ export default function DashboardLayout({
           <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" /> */}
         </div>
       </SidebarInset>
+      <AssistantModal />
     </SidebarProvider>
   );
 }

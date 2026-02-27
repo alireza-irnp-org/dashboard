@@ -145,7 +145,7 @@ const Composer: FC = () => {
   return (
     <ComposerPrimitive.Root className="aui-composer-root relative flex w-full flex-col">
       {/* <ComposerPrimitive.AttachmentDropzone className="aui-composer-attachment-dropzone border-input bg-background has-[textarea:focus-visible]:border-ring has-[textarea:focus-visible]:ring-ring/20 data-[dragging=true]:border-ring data-[dragging=true]:bg-accent/50 flex w-full flex-col rounded-2xl border px-1 pt-2 transition-shadow outline-none has-[textarea:focus-visible]:ring-2 data-[dragging=true]:border-dashed"> */}
-      <ComposerPrimitive.AttachmentDropzone className="aui-composer-attachment-dropzone shadow-[0_0_40px_-10px_rgba(99,102,241,0.35)] border-muted dark:border-muted bg-muted/50 dark:bg-card/10 has-[textarea:focus-visible]:ring-ring/0 data-[dragging=true]:border-ring data-[dragging=true]:bg-accent/50 flex w-full flex-col rounded-2xl border-2 px-1 pt-2 backdrop-blur-md transition-shadow outline-none has-[textarea:focus-visible]:ring-2 data-[dragging=true]:border-dashed">
+      <ComposerPrimitive.AttachmentDropzone className="aui-composer-attachment-dropzone dark:border-muted bg-card/60 dark:bg-card/10 has-[textarea:focus-visible]:ring-ring/0 data-[dragging=true]:border-ring data-[dragging=true]:bg-accent/50 flex w-full flex-col rounded-2xl border-2 border-gray-200 px-1 pt-2 shadow-[0_0_40px_-10px_rgba(99,102,241,0.35)] backdrop-blur-md transition-shadow outline-none has-[textarea:focus-visible]:ring-2 data-[dragging=true]:border-dashed">
         <ComposerAttachments />
         <ComposerPrimitive.Input
           placeholder="Send a message..."

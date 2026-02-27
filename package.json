@@ -20,6 +20,7 @@
     "@base-ui/react": "^1.2.0",
     "@floating-ui/react": "^0.27.18",
     "ai": "^6.0.101",
+    "assistant-stream": "^0.3.4",
     "better-auth": "^1.4.18",
     "better-sqlite3": "^12.6.2",
     "class-variance-authority": "^0.7.1",

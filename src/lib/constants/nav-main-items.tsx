@@ -14,6 +14,10 @@ export const navMainExample: NavMainItemType[] = [
     isActive: true,
     items: [
       {
+        title: "Chat",
+        url: "/chat",
+      },
+      {
         title: "History",
         url: "#",
       },
