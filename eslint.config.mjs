@@ -13,7 +13,7 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "src/app/globals.css",
-    "src/app/components/tool-ui/**",
+    "src/components/tool-ui/**",
   ]),
   {
     rules: {
