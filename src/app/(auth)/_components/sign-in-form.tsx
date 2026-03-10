@@ -11,6 +11,7 @@ import {
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
@@ -20,6 +21,7 @@ import {
   handleGoogleLogin,
 } from "@/lib/auth/actions/sign-in";
 import { cn } from "@/lib/utils";
+import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -38,6 +40,7 @@ export function LoginForm({
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -123,64 +126,75 @@ export function LoginForm({
             }}
           >
             <FieldGroup>
+              {/* Email */}
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
+
                 <Input
                   id="email"
                   name="email"
-                  type="email"
+                  // type="email"
                   placeholder="m@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  // required
                 />
 
                 {fieldErrors.email && (
-                  <FieldDescription className="text-red-500">
-                    {fieldErrors.email}
-                  </FieldDescription>
+                  <FieldError>{fieldErrors.email}</FieldError>
                 )}
               </Field>
 
+              {/* Password */}
               <Field>
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
 
                   <Link
                     href="/auth/reset-password"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                    className="text-muted-foreground ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
                     Forgot your password?
                   </Link>
                 </div>
 
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  // required
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="pr-10"
+                  />
+
+                  <Button
+                    variant="ghost"
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 h-auto -translate-y-1/2 p-1"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </Button>
+                </div>
 
                 {fieldErrors.password && (
-                  <FieldDescription className="text-red-500">
-                    {fieldErrors.password}
-                  </FieldDescription>
+                  <FieldError>{fieldErrors.password}</FieldError>
                 )}
               </Field>
 
+              {/* Form Errors + Buttons */}
               <Field>
-                {formError && (
-                  <FieldDescription className="text-red-500">
-                    {formError}
-                  </FieldDescription>
-                )}
+                {formError && <FieldError>{formError}</FieldError>}
 
                 <Button
                   type="submit"
                   loading={isSubmitting}
-                  disabled={isSubmitting || isGoogleLoading}
+                  disabled={
+                    !email.trim() ||
+                    !password.trim() ||
+                    isSubmitting ||
+                    isGoogleLoading
+                  }
                 >
                   {isSubmitting ? "Logging in..." : "Login"}
                 </Button>

@@ -20,10 +20,31 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
+import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
+
+import { z } from "zod";
+
 type Status = {
   type: "success" | "error";
   message: string;
 };
+
+const passwordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters.")
+      .max(128, "Password too long.")
+      .regex(/[A-Z]/, "Password must contain at least one uppercase letter.")
+      .regex(/[a-z]/, "Password must contain at least one lowercase letter.")
+      .regex(/[0-9]/, "Password must contain at least one number."),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  });
 
 export function NewPassword() {
   const searchParams = useSearchParams();
@@ -33,28 +54,31 @@ export function NewPassword() {
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [status, setStatus] = useState<Status | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleReset() {
-    if (!password || !confirmPassword) {
-      setStatus({
-        type: "error",
-        message: "Please fill in both password fields.",
-      });
-      return;
-    }
+    setStatus(null);
 
-    if (password !== confirmPassword) {
+    const validation = passwordSchema.safeParse({
+      password,
+      confirmPassword,
+    });
+
+    if (!validation.success) {
+      const error = validation.error.issues[0];
       setStatus({
         type: "error",
-        message: "Passwords do not match.",
+        message: error.message,
       });
       return;
     }
 
     setIsLoading(true);
-    setStatus(null);
 
     try {
       const { error } = await authClient.resetPassword({
@@ -95,29 +119,53 @@ export function NewPassword() {
       </CardHeader>
 
       <CardContent>
-        <FieldGroup>
+        <FieldGroup className="gap-4">
           <Field>
             <FieldLabel htmlFor="password">New Password</FieldLabel>
 
-            <Input
-              id="password"
-              type="password"
-              autoComplete="new-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="new-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="pr-10"
+              />
+
+              <Button
+                variant="ghost"
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 h-auto -translate-y-1/2 p-1"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </Button>
+            </div>
           </Field>
 
           <Field>
             <FieldLabel htmlFor="confirm-password">Confirm Password</FieldLabel>
 
-            <Input
-              id="confirm-password"
-              type="password"
-              autoComplete="new-password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
+            <div className="relative">
+              <Input
+                id="confirm-password"
+                type={showConfirmPassword ? "text" : "password"}
+                autoComplete="new-password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="pr-10"
+              />
+
+              <Button
+                variant="ghost"
+                type="button"
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 h-auto -translate-y-1/2 p-1"
+              >
+                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </Button>
+            </div>
           </Field>
 
           {status && (
@@ -141,6 +189,10 @@ export function NewPassword() {
             >
               Update password
             </Button>
+
+            <FieldDescription className="text-center">
+              <Link href="/auth/sign-in">Back to sign in</Link>
+            </FieldDescription>
           </Field>
         </FieldGroup>
       </CardContent>

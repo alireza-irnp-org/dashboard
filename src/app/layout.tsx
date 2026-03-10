@@ -1,8 +1,11 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
-import "./globals.css";
+import { SuspendFallback } from "@/components/suspend-fallback";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/providers/theme-provider";
+import type { Metadata } from "next";
+import { Geist, Geist_Mono, Inter } from "next/font/google";
+import NextTopLoader from "nextjs-toploader";
+import { Suspense } from "react";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -31,6 +34,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <NextTopLoader color="var(--primary)" showSpinner={false} />
         <TooltipProvider delayDuration={10}>
           <ThemeProvider
             attribute="class"
@@ -38,7 +42,8 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            {/* suspend and show a fallback spinner while the child components are loading or waiting for data */}
+            <Suspense fallback={<SuspendFallback />}>{children}</Suspense>
           </ThemeProvider>
         </TooltipProvider>
       </body>
