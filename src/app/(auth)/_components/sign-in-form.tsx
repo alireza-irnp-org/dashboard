@@ -16,16 +16,19 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import googleLogo from "@/images/icons/google.svg";
 import {
   handleEmailSignIn,
   handleGoogleLogin,
 } from "@/lib/auth/actions/sign-in";
 import { cn } from "@/lib/utils";
 import { Eye, EyeOff } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { z } from "zod";
+import AuthCard from "./auth-components";
 
 const loginSchema = z.object({
   email: z.email("Invalid email address"),
@@ -110,12 +113,12 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
+      <AuthCard>
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-center text-lg">Login</CardTitle>
+          {/* <CardDescription>
             Enter your email below to login to your account
-          </CardDescription>
+          </CardDescription> */}
         </CardHeader>
 
         <CardContent>
@@ -134,7 +137,7 @@ export function LoginForm({
                   id="email"
                   name="email"
                   // type="email"
-                  placeholder="m@example.com"
+                  placeholder="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -161,6 +164,7 @@ export function LoginForm({
                   <Input
                     id="password"
                     name="password"
+                    placeholder="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -206,6 +210,13 @@ export function LoginForm({
                   loading={isGoogleLoading}
                   disabled={isSubmitting || isGoogleLoading}
                 >
+                  <Image
+                    src={googleLogo}
+                    alt="Google"
+                    width={15}
+                    height={15}
+                    priority
+                  />
                   {isGoogleLoading
                     ? "Redirecting to Google..."
                     : "Login with Google"}
@@ -219,7 +230,7 @@ export function LoginForm({
             </FieldGroup>
           </form>
         </CardContent>
-      </Card>
+      </AuthCard>
     </div>
   );
 }

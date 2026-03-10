@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import AuthCard from "./auth-components";
 
 type Status = {
   type: "success" | "error";
@@ -72,9 +73,11 @@ export function ResetPassword() {
   }
 
   return (
-    <Card>
+    <AuthCard>
       <CardHeader>
-        <CardTitle>Reset your password</CardTitle>
+        <CardTitle className="text-center text-lg">
+          Reset your password
+        </CardTitle>
         <CardDescription>
           Enter your email address and we’ll send you a reset link.
         </CardDescription>
@@ -89,7 +92,7 @@ export function ResetPassword() {
               id="email"
               type="email"
               autoComplete="email"
-              placeholder="you@example.com"
+              placeholder="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -133,6 +136,6 @@ export function ResetPassword() {
           </Field>
         </FieldGroup>
       </CardContent>
-    </Card>
+    </AuthCard>
   );
 }

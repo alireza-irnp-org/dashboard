@@ -16,16 +16,19 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import googleLogo from "@/images/icons/google.svg";
 import {
   handleEmailSignUp,
   handleGoogleLogin,
 } from "@/lib/auth/actions/sign-in";
 import { cn } from "@/lib/utils";
 import { Eye, EyeOff } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SubmitEvent, useState } from "react";
 import { z } from "zod";
+import AuthCard from "./auth-components";
 
 // Add confirmPassword and ensure it matches password
 const signUpSchema = z
@@ -117,21 +120,23 @@ export function SignUpForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
+      <AuthCard>
         <CardHeader>
-          <CardTitle>Create an account</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-center text-lg">
+            Create an account
+          </CardTitle>
+          {/* <CardDescription>
             Sign up with your email and we&apos;ll send you a verification link.
-          </CardDescription>
+          </CardDescription> */}
         </CardHeader>
 
         <CardContent>
           <form onSubmit={onSubmit}>
-            <FieldGroup className="gap-2">
+            <FieldGroup className="gap-3">
               {/* Name */}
               <Field>
                 <FieldLabel htmlFor="name">Name</FieldLabel>
-                <Input id="name" name="name" placeholder="John Doe" />
+                <Input id="name" name="name" placeholder="name" />
                 {fieldErrors.name && (
                   <FieldError>{fieldErrors.name}</FieldError>
                 )}
@@ -143,7 +148,7 @@ export function SignUpForm({
                 <Input
                   id="email"
                   name="email"
-                  placeholder="m@example.com"
+                  placeholder="email"
                   autoComplete="email"
                 />
                 {fieldErrors.email && (
@@ -158,6 +163,7 @@ export function SignUpForm({
                   <Input
                     id="password"
                     name="password"
+                    placeholder="password"
                     type={showPassword ? "text" : "password"}
                     autoComplete="new-password"
                     className="pr-10"
@@ -185,6 +191,7 @@ export function SignUpForm({
                   <Input
                     id="confirmPassword"
                     name="confirmPassword"
+                    placeholder="confirm password"
                     type={showConfirmPassword ? "text" : "password"}
                     autoComplete="new-password"
                     className="pr-10"
@@ -224,6 +231,13 @@ export function SignUpForm({
                   type="button"
                   onClick={handleGoogleLogin}
                 >
+                  <Image
+                    src={googleLogo}
+                    alt="Google"
+                    width={15}
+                    height={15}
+                    priority
+                  />
                   Continue with Google
                 </Button>
 
@@ -235,7 +249,7 @@ export function SignUpForm({
             </FieldGroup>
           </form>
         </CardContent>
-      </Card>
+      </AuthCard>
     </div>
   );
 }

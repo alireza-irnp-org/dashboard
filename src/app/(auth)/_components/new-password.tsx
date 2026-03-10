@@ -24,6 +24,7 @@ import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 
 import { z } from "zod";
+import AuthCard from "./auth-components";
 
 type Status = {
   type: "success" | "error";
@@ -110,9 +111,11 @@ export function NewPassword() {
   }
 
   return (
-    <Card>
+    <AuthCard>
       <CardHeader>
-        <CardTitle>Create a new password</CardTitle>
+        <CardTitle className="text-center text-lg">
+          Create a new password
+        </CardTitle>
         <CardDescription>
           Enter a new password for your account.
         </CardDescription>
@@ -126,6 +129,7 @@ export function NewPassword() {
             <div className="relative">
               <Input
                 id="password"
+                placeholder="password"
                 type={showPassword ? "text" : "password"}
                 autoComplete="new-password"
                 value={password}
@@ -150,6 +154,7 @@ export function NewPassword() {
             <div className="relative">
               <Input
                 id="confirm-password"
+                placeholder="confirm password"
                 type={showConfirmPassword ? "text" : "password"}
                 autoComplete="new-password"
                 value={confirmPassword}
@@ -196,6 +201,6 @@ export function NewPassword() {
           </Field>
         </FieldGroup>
       </CardContent>
-    </Card>
+    </AuthCard>
   );
 }

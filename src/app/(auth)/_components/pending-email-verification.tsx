@@ -19,6 +19,7 @@ import { authClient } from "@/lib/auth/auth-client";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import AuthCard from "./auth-components";
 
 type Status = {
   type: "success" | "error";
@@ -78,9 +79,9 @@ export function PendingEmailVerification() {
   }
 
   return (
-    <Card>
+    <AuthCard>
       <CardHeader>
-        <CardTitle>Verify your email</CardTitle>
+        <CardTitle className="text-center text-lg">Verify your email</CardTitle>
         <CardDescription>
           We sent a verification link to <strong>{descriptionEmail}</strong>.
           Click it to finish creating your account.
@@ -96,7 +97,7 @@ export function PendingEmailVerification() {
               id="pending-email"
               type="email"
               autoComplete="email"
-              placeholder="you@example.com"
+              placeholder="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
             />
@@ -140,6 +141,6 @@ export function PendingEmailVerification() {
           </Field>
         </FieldGroup>
       </CardContent>
-    </Card>
+    </AuthCard>
   );
 }
