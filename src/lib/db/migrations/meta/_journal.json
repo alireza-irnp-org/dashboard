@@ -29,6 +29,20 @@
       "when": 1771830597256,
       "tag": "0003_perpetual_lady_ursula",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1772826136434,
+      "tag": "0004_mean_scarlet_witch",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1772828196080,
+      "tag": "0005_amusing_captain_britain",
+      "breakpoints": true
     }
   ]
 }

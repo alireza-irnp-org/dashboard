@@ -9,15 +9,6 @@ import {
   type WeatherWidgetProps,
 } from "@/components/tool-ui/weather-widget/runtime";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
@@ -27,14 +18,18 @@ import {
   Tools,
   useAui,
   WebSpeechDictationAdapter,
+  type ThreadHistoryAdapter,
   type Toolkit,
 } from "@assistant-ui/react";
 import {
   AssistantChatTransport,
   useChatRuntime,
 } from "@assistant-ui/react-ai-sdk";
+import { unstable_useRemoteThreadListRuntime as useRemoteThreadListRuntime } from "@assistant-ui/react";
 import { DevToolsModal } from "@assistant-ui/react-devtools";
 import { lastAssistantMessageIsCompleteWithToolCalls } from "ai";
+import { useMemo } from "react";
+import { createAssistantStream } from "assistant-stream";
 import { z } from "zod";
 
 const WeatherWidgetPayloadSchema = z.object({}).passthrough();
@@ -72,7 +67,7 @@ const toolkit: Toolkit = {
     type: "backend",
     render: ({ result }) => {
       const parsed = safeParseSerializableLinkPreview(result);
-      if (!parsed) return null; // Wait for full payload before rendering
+      if (!parsed) return null;
       return <LinkPreview {...parsed} />;
     },
   },
@@ -92,23 +87,154 @@ const toolkit: Toolkit = {
   },
 };
 
-export const Assistant = () => {
-  const runtime = useChatRuntime({
-    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
-    transport: new AssistantChatTransport({
-      api: "/api/chat",
+function makeHistoryAdapter(remoteId: string | undefined): ThreadHistoryAdapter {
+  return {
+    load: async () => ({ messages: [] }),
+    append: async () => {},
+    withFormat: (formatAdapter) => ({
+      load: async () => {
+        if (!remoteId) return { messages: [] };
+        const res = await fetch(`/api/threads/${remoteId}/messages`);
+        if (!res.ok) return { messages: [] };
+        const data: {
+          headId: string | null;
+          messages: { id: string; parent_id: string | null; format: string; content: unknown }[];
+        } = await res.json();
+        return {
+          headId: data.headId,
+          messages: data.messages.map((entry) =>
+            formatAdapter.decode({
+              id: entry.id,
+              parent_id: entry.parent_id,
+              format: entry.format,
+              content: entry.content as never,
+            }),
+          ),
+        };
+      },
+      append: async (item) => {
+        if (!remoteId) return;
+        const encoded = formatAdapter.encode(item);
+        const id = formatAdapter.getId(item.message);
+        await fetch(`/api/threads/${remoteId}/messages`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id,
+            parent_id: item.parentId,
+            format: formatAdapter.format,
+            content: encoded,
+          }),
+        });
+      },
+      update: async (item) => {
+        if (!remoteId) return;
+        const encoded = formatAdapter.encode(item);
+        const id = formatAdapter.getId(item.message);
+        await fetch(`/api/threads/${remoteId}/messages`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id,
+            parent_id: item.parentId,
+            format: formatAdapter.format,
+            content: encoded,
+          }),
+        });
+      },
     }),
-    adapters: {
-      dictation: new WebSpeechDictationAdapter({
-        // Optional configuration
-        language: "en-US", // Language for recognition (default: browser language)
-        continuous: true, // Keep recording after user stops (default: true)
-        interimResults: false, // Return interim results (default: true)
-      }),
+  };
+}
+
+export const Assistant = () => {
+  const aui = useAui({ tools: Tools({ toolkit }) });
+
+  const runtime = useRemoteThreadListRuntime({
+    adapter: {
+      list: async () => {
+        const res = await fetch("/api/threads");
+        if (!res.ok) return { threads: [] };
+        return res.json();
+      },
+      initialize: async () => {
+        const res = await fetch("/api/threads", { method: "POST" });
+        return res.json();
+      },
+      fetch: async (remoteId) => {
+        const res = await fetch(`/api/threads/${remoteId}`);
+        return res.json();
+      },
+      rename: async (remoteId, newTitle) => {
+        await fetch(`/api/threads/${remoteId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: newTitle }),
+        });
+      },
+      archive: async (remoteId) => {
+        await fetch(`/api/threads/${remoteId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ isArchived: true }),
+        });
+      },
+      unarchive: async (remoteId) => {
+        await fetch(`/api/threads/${remoteId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ isArchived: false }),
+        });
+      },
+      delete: async (remoteId) => {
+        await fetch(`/api/threads/${remoteId}`, { method: "DELETE" });
+      },
+      generateTitle: async (remoteId, messages) => {
+        const firstUserMsg = messages.find((m) => m.role === "user");
+        const title =
+          firstUserMsg?.content
+            .filter((p) => p.type === "text")
+            .map((p) => (p as { type: "text"; text: string }).text)
+            .join("")
+            .slice(0, 60) ?? "New Chat";
+
+        // Persist title in background
+        fetch(`/api/threads/${remoteId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title }),
+        }).catch(console.error);
+
+        return createAssistantStream((controller) => {
+          controller.appendText(title);
+          controller.close();
+        });
+      },
+    },
+    runtimeHook: () => {
+      // This hook runs inside ThreadListItemRuntimeProvider so useAui() gives per-thread context
+      const innerAui = useAui();
+      const remoteId = innerAui.threadListItem().getState().remoteId;
+
+      const historyAdapter = useMemo(
+        () => makeHistoryAdapter(remoteId),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [remoteId],
+      );
+
+      return useChatRuntime({
+        sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+        transport: new AssistantChatTransport({ api: "/api/chat" }),
+        adapters: {
+          history: historyAdapter,
+          dictation: new WebSpeechDictationAdapter({
+            language: "en-US",
+            continuous: true,
+            interimResults: false,
+          }),
+        },
+      });
     },
   });
-
-  const aui = useAui({ tools: Tools({ toolkit }) });
 
   return (
     <AssistantRuntimeProvider runtime={runtime} aui={aui}>
@@ -119,24 +245,6 @@ export const Assistant = () => {
           <SidebarInset>
             <header className="bg-background/60 flex h-12 shrink-0 items-center gap-2 border-b px-4 backdrop-blur-md">
               <SidebarTrigger />
-              {/* <Separator orientation="vertical" className="mr-2 h-4" />
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink
-                      href="https://www.assistant-ui.com/docs/getting-started"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Build Your Own ChatGPT UX
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className="hidden md:block" />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>Starter Template</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb> */}
             </header>
             <div className="flex-1 overflow-hidden">
               <Thread />
