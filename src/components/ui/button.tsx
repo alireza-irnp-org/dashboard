@@ -2,6 +2,7 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Slot } from "radix-ui";
 
+import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
@@ -44,12 +45,26 @@ function Button({
   variant = "default",
   size = "default",
   asChild = false,
+  loading = false,
+  disabled,
+  children,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
+    loading?: boolean;
   }) {
   const Comp = asChild ? Slot.Root : "button";
+  const shouldDisable = Boolean(disabled) || loading;
+  const innerContent =
+    loading && !asChild ? (
+      <span className="inline-flex items-center justify-center gap-2">
+        <Spinner className="text-current" />
+        {children}
+      </span>
+    ) : (
+      children
+    );
 
   return (
     <Comp
@@ -57,8 +72,12 @@ function Button({
       data-variant={variant}
       data-size={size}
       className={cn(buttonVariants({ variant, size, className }))}
+      disabled={shouldDisable}
+      data-loading={loading ? "true" : undefined}
       {...props}
-    />
+    >
+      {innerContent}
+    </Comp>
   );
 }
 
