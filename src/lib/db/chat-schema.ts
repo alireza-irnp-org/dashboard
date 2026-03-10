@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { boolean, index, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, index, jsonb, pgTable, primaryKey, text, timestamp } from "drizzle-orm/pg-core";
 import { user } from "@/lib/auth/auth-schema";
 
 export const thread = pgTable(
@@ -58,3 +58,18 @@ export const messageRelations = relations(message, ({ one }) => ({
 export const userThreadsRelation = relations(user, ({ many }) => ({
   threads: many(thread),
 }));
+
+export const vote = pgTable(
+  "vote",
+  {
+    messageId: text("message_id")
+      .notNull()
+      .references(() => message.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    isUpvote: boolean("is_upvote").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.messageId, table.userId] })],
+);

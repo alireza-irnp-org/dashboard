@@ -28,7 +28,8 @@ import {
 import { unstable_useRemoteThreadListRuntime as useRemoteThreadListRuntime } from "@assistant-ui/react";
 import { DevToolsModal } from "@assistant-ui/react-devtools";
 import { lastAssistantMessageIsCompleteWithToolCalls } from "ai";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { useVoteStore } from "@/lib/vote-store";
 import { createAssistantStream } from "assistant-stream";
 import { z } from "zod";
 
@@ -214,6 +215,17 @@ export const Assistant = () => {
       // This hook runs inside ThreadListItemRuntimeProvider so useAui() gives per-thread context
       const innerAui = useAui();
       const remoteId = innerAui.threadListItem().getState().remoteId;
+
+      const mergeVotes = useVoteStore((s) => s.mergeVotes);
+      useEffect(() => {
+        if (!remoteId) return;
+        const controller = new AbortController();
+        fetch(`/api/threads/${remoteId}/votes`, { signal: controller.signal })
+          .then((res) => (res.ok ? res.json() : { votes: {} }))
+          .then(({ votes }) => mergeVotes(votes))
+          .catch(() => {});
+        return () => controller.abort();
+      }, [remoteId, mergeVotes]);
 
       const historyAdapter = useMemo(
         () => makeHistoryAdapter(remoteId),
