@@ -21,6 +21,7 @@ import {
   handleEmailSignIn,
   handleGoogleLogin,
 } from "@/lib/auth/actions/sign-in";
+import { routes } from "@/lib/constants/routes";
 import { cn } from "@/lib/utils";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
@@ -28,17 +29,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { z } from "zod";
-import AuthCard from "./auth-components";
+import { authClassNames, AuthContainer } from "./auth-layout";
 
 const loginSchema = z.object({
   email: z.email("Invalid email address"),
   password: z.string().min(1, { message: "Password required" }),
 });
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+export function LoginForm() {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
@@ -112,10 +110,10 @@ export function LoginForm({
   }
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <AuthCard>
+    <AuthContainer>
+      <Card className={cn(authClassNames.card)}>
         <CardHeader>
-          <CardTitle className="text-center text-lg">Login</CardTitle>
+          <CardTitle className={cn(authClassNames.cardTitle)}>Login</CardTitle>
           {/* <CardDescription>
             Enter your email below to login to your account
           </CardDescription> */}
@@ -224,13 +222,13 @@ export function LoginForm({
 
                 <FieldDescription className="text-center">
                   Don&apos;t have an account?{" "}
-                  <Link href="/auth/sign-up">Sign up</Link>
+                  <Link href={routes.auth.signUp()}>Sign up</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
           </form>
         </CardContent>
-      </AuthCard>
-    </div>
+      </Card>
+    </AuthContainer>
   );
 }

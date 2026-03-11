@@ -18,8 +18,10 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
-import AuthCard from "./auth-components";
+import { authClassNames, AuthContainer } from "./auth-layout";
+import { routes } from "@/lib/constants/routes";
 
 type Status = {
   type: "success" | "error";
@@ -73,69 +75,73 @@ export function ResetPassword() {
   }
 
   return (
-    <AuthCard>
-      <CardHeader>
-        <CardTitle className="text-center text-lg">
-          Reset your password
-        </CardTitle>
-        <CardDescription>
-          Enter your email address and we’ll send you a reset link.
-        </CardDescription>
-      </CardHeader>
+    <AuthContainer>
+      <Card className={cn(authClassNames.card)}>
+        <CardHeader>
+          <CardTitle className={cn(authClassNames.cardTitle)}>
+            Reset your password
+          </CardTitle>
+          <CardDescription>
+            Enter your email address and we’ll send you a reset link.
+          </CardDescription>
+        </CardHeader>
 
-      <CardContent>
-        <FieldGroup>
-          <Field>
-            <FieldLabel htmlFor="email">Email</FieldLabel>
+        <CardContent>
+          <FieldGroup>
+            <Field>
+              <FieldLabel htmlFor="email">Email</FieldLabel>
 
-            <Input
-              id="email"
-              type="email"
-              autoComplete="email"
-              placeholder="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+              <Input
+                id="email"
+                type="email"
+                autoComplete="email"
+                placeholder="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
 
-            <FieldDescription>
-              We&apos;ll email you a secure password reset link.
-            </FieldDescription>
-          </Field>
+              <FieldDescription>
+                We&apos;ll email you a secure password reset link.
+              </FieldDescription>
+            </Field>
 
-          {status && (
-            <FieldDescription
-              role="status"
-              aria-live="polite"
-              className={
-                status.type === "error" ? "text-destructive" : "text-green-500"
-              }
-            >
-              {status.message}
-            </FieldDescription>
-          )}
-
-          <Field>
-            <Button
-              type="button"
-              loading={isSending}
-              disabled={!email.trim()}
-              onClick={handleReset}
-            >
-              Send reset link
-            </Button>
-
-            <FieldDescription className="text-center">
-              Remember your password?{" "}
-              <Link
-                href="/auth/sign-in"
-                className="text-primary underline-offset-4 hover:underline"
+            {status && (
+              <FieldDescription
+                role="status"
+                aria-live="polite"
+                className={
+                  status.type === "error"
+                    ? "text-destructive"
+                    : "text-green-500"
+                }
               >
-                Back to sign in
-              </Link>
-            </FieldDescription>
-          </Field>
-        </FieldGroup>
-      </CardContent>
-    </AuthCard>
+                {status.message}
+              </FieldDescription>
+            )}
+
+            <Field>
+              <Button
+                type="button"
+                loading={isSending}
+                disabled={!email.trim()}
+                onClick={handleReset}
+              >
+                Send reset link
+              </Button>
+
+              <FieldDescription className="text-center">
+                Remember your password?{" "}
+                <Link
+                  href={routes.auth.signIn()}
+                  className="text-primary underline-offset-4 hover:underline"
+                >
+                  Back to sign in
+                </Link>
+              </FieldDescription>
+            </Field>
+          </FieldGroup>
+        </CardContent>
+      </Card>
+    </AuthContainer>
   );
 }

@@ -23,8 +23,10 @@ import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 
+import { routes } from "@/lib/constants/routes";
+import { cn } from "@/lib/utils";
 import { z } from "zod";
-import AuthCard from "./auth-components";
+import { authClassNames, AuthContainer } from "./auth-layout";
 
 type Status = {
   type: "success" | "error";
@@ -111,96 +113,106 @@ export function NewPassword() {
   }
 
   return (
-    <AuthCard>
-      <CardHeader>
-        <CardTitle className="text-center text-lg">
-          Create a new password
-        </CardTitle>
-        <CardDescription>
-          Enter a new password for your account.
-        </CardDescription>
-      </CardHeader>
+    <AuthContainer>
+      <Card className={cn(authClassNames.card)}>
+        <CardHeader>
+          <CardTitle className={cn(authClassNames.cardTitle)}>
+            Create a new password
+          </CardTitle>
+          <CardDescription>
+            Enter a new password for your account.
+          </CardDescription>
+        </CardHeader>
 
-      <CardContent>
-        <FieldGroup className="gap-4">
-          <Field>
-            <FieldLabel htmlFor="password">New Password</FieldLabel>
+        <CardContent>
+          <FieldGroup className="gap-4">
+            <Field>
+              <FieldLabel htmlFor="password">New Password</FieldLabel>
 
-            <div className="relative">
-              <Input
-                id="password"
-                placeholder="password"
-                type={showPassword ? "text" : "password"}
-                autoComplete="new-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="pr-10"
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  placeholder="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pr-10"
+                />
 
-              <Button
-                variant="ghost"
-                type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-                className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 h-auto -translate-y-1/2 p-1"
+                <Button
+                  variant="ghost"
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 h-auto -translate-y-1/2 p-1"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </Button>
+              </div>
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="confirm-password">
+                Confirm Password
+              </FieldLabel>
+
+              <div className="relative">
+                <Input
+                  id="confirm-password"
+                  placeholder="confirm password"
+                  type={showConfirmPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="pr-10"
+                />
+
+                <Button
+                  variant="ghost"
+                  type="button"
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 h-auto -translate-y-1/2 p-1"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
+                </Button>
+              </div>
+            </Field>
+
+            {status && (
+              <FieldDescription
+                role="status"
+                aria-live="polite"
+                className={
+                  status.type === "error"
+                    ? "text-destructive"
+                    : "text-green-500"
+                }
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </Button>
-            </div>
-          </Field>
+                {status.message}
+              </FieldDescription>
+            )}
 
-          <Field>
-            <FieldLabel htmlFor="confirm-password">Confirm Password</FieldLabel>
-
-            <div className="relative">
-              <Input
-                id="confirm-password"
-                placeholder="confirm password"
-                type={showConfirmPassword ? "text" : "password"}
-                autoComplete="new-password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="pr-10"
-              />
-
+            <Field>
               <Button
-                variant="ghost"
                 type="button"
-                onClick={() => setShowConfirmPassword((prev) => !prev)}
-                className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 h-auto -translate-y-1/2 p-1"
+                loading={isLoading}
+                disabled={!password || !confirmPassword}
+                onClick={handleReset}
               >
-                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                Update password
               </Button>
-            </div>
-          </Field>
 
-          {status && (
-            <FieldDescription
-              role="status"
-              aria-live="polite"
-              className={
-                status.type === "error" ? "text-destructive" : "text-green-500"
-              }
-            >
-              {status.message}
-            </FieldDescription>
-          )}
-
-          <Field>
-            <Button
-              type="button"
-              loading={isLoading}
-              disabled={!password || !confirmPassword}
-              onClick={handleReset}
-            >
-              Update password
-            </Button>
-
-            <FieldDescription className="text-center">
-              <Link href="/auth/sign-in">Back to sign in</Link>
-            </FieldDescription>
-          </Field>
-        </FieldGroup>
-      </CardContent>
-    </AuthCard>
+              <FieldDescription className="text-center">
+                <Link href={routes.auth.signIn()}>Back to sign in</Link>
+              </FieldDescription>
+            </Field>
+          </FieldGroup>
+        </CardContent>
+      </Card>
+    </AuthContainer>
   );
 }

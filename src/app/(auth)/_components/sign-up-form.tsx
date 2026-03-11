@@ -21,6 +21,7 @@ import {
   handleEmailSignUp,
   handleGoogleLogin,
 } from "@/lib/auth/actions/sign-in";
+import { routes } from "@/lib/constants/routes";
 import { cn } from "@/lib/utils";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
@@ -28,7 +29,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SubmitEvent, useState } from "react";
 import { z } from "zod";
-import AuthCard from "./auth-components";
+import { authClassNames, AuthContainer } from "./auth-layout";
 
 // Add confirmPassword and ensure it matches password
 const signUpSchema = z
@@ -52,10 +53,7 @@ const signUpSchema = z
     path: ["confirmPassword"],
   });
 
-export function SignUpForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+export function SignUpForm() {
   const router = useRouter();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -119,10 +117,10 @@ export function SignUpForm({
   }
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <AuthCard>
+    <AuthContainer>
+      <Card className={cn(authClassNames.card)}>
         <CardHeader>
-          <CardTitle className="text-center text-lg">
+          <CardTitle className={cn(authClassNames.cardTitle)}>
             Create an account
           </CardTitle>
           {/* <CardDescription>
@@ -243,13 +241,13 @@ export function SignUpForm({
 
                 <FieldDescription className="text-center">
                   Already have an account?{" "}
-                  <Link href="/auth/sign-in">Sign in</Link>
+                  <Link href={routes.auth.signIn()}>Sign in</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
           </form>
         </CardContent>
-      </AuthCard>
-    </div>
+      </Card>
+    </AuthContainer>
   );
 }
