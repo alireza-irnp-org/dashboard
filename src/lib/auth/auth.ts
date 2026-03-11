@@ -21,7 +21,7 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: true,
     sendResetPassword: async ({ user, url, token }, request) => {
-      sendEmail({
+      await sendEmail({
         to: user.email,
         subject: "Verify your email address",
         html: (await render(PasswordResetEmail({ resetUrl: url }))) as string,
@@ -32,7 +32,7 @@ export const auth = betterAuth({
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url, token }, _request) => {
       // Don't await - prevents timing attacks
-      sendEmail({
+      await sendEmail({
         to: user.email,
         subject: "Verify your email address",
         html: (await render(
