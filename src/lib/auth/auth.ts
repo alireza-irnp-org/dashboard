@@ -5,6 +5,7 @@ import { VerificationEmail } from "@/email-templates/verification";
 import { db } from "@/lib/db/index";
 import * as schema from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
+import { expo } from "@better-auth/expo";
 import { render } from "@react-email/components";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
@@ -67,6 +68,12 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
-  trustedOrigins: [process.env.BETTER_AUTH_URL!],
-  plugins: [nextCookies(), jwt()],
+  trustedOrigins: [
+    process.env.BETTER_AUTH_URL!,
+    "myapp://",
+    "myapp://*",
+    "exp://",
+    "exp://**",
+  ],
+  plugins: [nextCookies(), jwt(), expo()],
 });
