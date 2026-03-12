@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ReactNode } from "react";
 
 export const authClassNames = {
-  card: "dark:bg-card/20 shadow-lg backdrop-blur-2xl",
+  card: "dark:bg-card/50 shadow-lg backdrop-blur-2xl",
   cardTitle: "text-center text-lg",
 };
 
