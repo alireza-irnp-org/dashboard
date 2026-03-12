@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 
+import { Spinner } from "@/components/ui/spinner";
 import { routes } from "@/lib/constants/routes";
 import { cn } from "@/lib/utils";
 import { z } from "zod";
@@ -199,10 +200,10 @@ export function NewPassword() {
             <Field>
               <Button
                 type="button"
-                loading={isLoading}
                 disabled={!password || !confirmPassword}
                 onClick={handleReset}
               >
+                {isLoading && <Spinner />}
                 Update password
               </Button>
 

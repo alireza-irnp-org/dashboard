@@ -26,13 +26,13 @@ export default async function proxy(req: NextRequest) {
     }
   }
 
-  if (isOnDashboard) {
-    if (!isLoggedIn)
-      return NextResponse.redirect(new URL(routes.auth.signIn(), req.nextUrl));
-  } else if (isOnAuthPages) {
-    if (isLoggedIn)
-      return NextResponse.redirect(new URL(routes.dashboard(), req.nextUrl));
-  }
+  // if (isOnDashboard) {
+  //   if (!isLoggedIn)
+  //     return NextResponse.redirect(new URL(routes.auth.signIn(), req.nextUrl));
+  // } else if (isOnAuthPages) {
+  //   if (isLoggedIn)
+  //     return NextResponse.redirect(new URL(routes.dashboard(), req.nextUrl));
+  // }
 }
 
 // Routes Proxy should not run on

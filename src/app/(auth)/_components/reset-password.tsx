@@ -18,10 +18,11 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
+import { routes } from "@/lib/constants/routes";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { authClassNames, AuthContainer } from "./auth-layout";
-import { routes } from "@/lib/constants/routes";
 
 type Status = {
   type: "success" | "error";
@@ -122,10 +123,10 @@ export function ResetPassword() {
             <Field>
               <Button
                 type="button"
-                loading={isSending}
                 disabled={!email.trim()}
                 onClick={handleReset}
               >
+                {isSending && <Spinner />}
                 Send reset link
               </Button>
 

@@ -15,6 +15,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth/auth-client";
 import { routes } from "@/lib/constants/routes";
 import { cn } from "@/lib/utils";
@@ -129,10 +130,10 @@ export function PendingEmailVerification() {
             <Field>
               <Button
                 type="button"
-                loading={isSending}
                 disabled={!email.trim()}
                 onClick={handleResend}
               >
+                {isSending && <Spinner />}
                 Resend verification email
               </Button>
 

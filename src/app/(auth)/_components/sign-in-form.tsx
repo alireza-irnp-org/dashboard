@@ -16,6 +16,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import googleLogo from "@/images/icons/google.svg";
 import {
   handleEmailSignIn,
@@ -190,7 +191,6 @@ export function LoginForm() {
 
                 <Button
                   type="submit"
-                  loading={isSubmitting}
                   disabled={
                     !email.trim() ||
                     !password.trim() ||
@@ -198,6 +198,7 @@ export function LoginForm() {
                     isGoogleLoading
                   }
                 >
+                  {isSubmitting && <Spinner />}
                   {isSubmitting ? "Logging in..." : "Login"}
                 </Button>
 
@@ -205,9 +206,9 @@ export function LoginForm() {
                   variant="outline"
                   type="button"
                   onClick={onGoogleLogin}
-                  loading={isGoogleLoading}
                   disabled={isSubmitting || isGoogleLoading}
                 >
+                  {isGoogleLoading && <Spinner />}
                   <Image
                     src={googleLogo}
                     alt="Google"

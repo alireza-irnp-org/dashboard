@@ -16,6 +16,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import googleLogo from "@/images/icons/google.svg";
 import {
   handleEmailSignUp,
@@ -55,7 +56,7 @@ const signUpSchema = z
 
 export function SignUpForm() {
   const router = useRouter();
-
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -113,6 +114,17 @@ export function SignUpForm() {
       }
     } finally {
       setIsSubmitting(false);
+    }
+  }
+
+  async function onGoogleLogin() {
+    try {
+      setIsGoogleLoading(true);
+      await handleGoogleLogin();
+    } catch (err) {
+      setFormError("Google login failed. Please try again.");
+    } finally {
+      setIsGoogleLoading(false);
     }
   }
 
@@ -216,19 +228,13 @@ export function SignUpForm() {
               <Field>
                 {formError && <FieldError>{formError}</FieldError>}
 
-                <Button
-                  type="submit"
-                  loading={isSubmitting}
-                  disabled={isSubmitting}
-                >
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting && <Spinner />}
                   Sign up
                 </Button>
 
-                <Button
-                  variant="outline"
-                  type="button"
-                  onClick={handleGoogleLogin}
-                >
+                <Button variant="outline" type="button" onClick={onGoogleLogin}>
+                  {isGoogleLoading && <Spinner />}
                   <Image
                     src={googleLogo}
                     alt="Google"

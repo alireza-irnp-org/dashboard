@@ -5,7 +5,8 @@ import { motion } from "framer-motion";
 import { ReactNode } from "react";
 
 export const authClassNames = {
-  card: "dark:bg-card/50 shadow-lg backdrop-blur-2xl",
+  // card: "dark:bg-card/50 shadow-lg backdrop-blur-2xl",
+  card: "",
   cardTitle: "text-center text-lg",
 };
 
@@ -28,15 +29,15 @@ export function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <div className="relative h-screen w-screen overflow-hidden">
       {/* Dark theme background */}
-      <div
+      {/* <div
         className="absolute inset-0 -z-10 hidden bg-cover bg-center bg-no-repeat dark:block"
         style={{
           backgroundImage: `url(${granientBackground.src})`,
         }}
-      />
+      /> */}
 
       {/* Dark overlay */}
-      <div className="absolute inset-0 -z-10 hidden bg-black/70 dark:block" />
+      {/* <div className="absolute inset-0 -z-10 hidden bg-black/70 dark:block" /> */}
 
       {/* Page Content */}
       <div className="relative z-10 flex h-full w-full items-center justify-center">
