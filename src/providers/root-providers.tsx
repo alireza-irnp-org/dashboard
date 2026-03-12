@@ -10,6 +10,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import NextTopLoader from "nextjs-toploader";
 import { Suspense } from "react";
 
@@ -38,6 +39,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           disableTransitionOnChange
         >
           <NextTopLoader color="var(--primary)" showSpinner={false} />
+          <ReactQueryDevtools initialIsOpen={false} />
           <Suspense fallback={<SuspendFallback />}>{children}</Suspense>
         </ThemeProvider>
       </TooltipProvider>

@@ -8,7 +8,7 @@ export default async function proxy(req: NextRequest) {
   });
 
   const isLoggedIn = session;
-  const isOnDashboard = req.nextUrl.pathname.startsWith(routes.dashboard());
+  const isOnDashboard = req.nextUrl.pathname.startsWith(routes.dashboard.root());
   const isOnAuthPages = req.nextUrl.pathname.startsWith(routes.authParent());
   const isOnSignin = req.nextUrl.pathname.startsWith(routes.auth.signIn());
   const isOnSignUp = req.nextUrl.pathname.startsWith(routes.auth.signUp());
@@ -20,7 +20,7 @@ export default async function proxy(req: NextRequest) {
 
   if (isRoot) {
     if (isLoggedIn) {
-      return NextResponse.redirect(new URL(routes.dashboard(), req.nextUrl));
+      return NextResponse.redirect(new URL(routes.dashboard.root(), req.nextUrl));
     } else {
       return NextResponse.redirect(new URL(routes.auth.signIn(), req.nextUrl));
     }
@@ -31,7 +31,7 @@ export default async function proxy(req: NextRequest) {
       return NextResponse.redirect(new URL(routes.auth.signIn(), req.nextUrl));
   } else if (isOnAuthPages) {
     if (isLoggedIn)
-      return NextResponse.redirect(new URL(routes.dashboard(), req.nextUrl));
+      return NextResponse.redirect(new URL(routes.dashboard.root(), req.nextUrl));
   }
 }
 

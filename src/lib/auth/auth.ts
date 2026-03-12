@@ -64,15 +64,28 @@ export const auth = betterAuth({
     //https://console.cloud.google.com/apis/dashboard
     google: {
       // prompt: "select_account",
-      prompt: "select_account consent", 
+      prompt: "select_account consent",
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      accessType: "offline", 
+      accessType: "offline",
     },
-    zoom: { 
-      clientId: process.env.ZOOM_CLIENT_ID as string, 
-      clientSecret: process.env.ZOOM_CLIENT_SECRET as string, 
+    zoom: {
+      clientId: process.env.ZOOM_CLIENT_ID as string,
+      clientSecret: process.env.ZOOM_CLIENT_SECRET as string,
     },
+  },
+  account: {
+    // modelName: "accounts",
+    // fields: {
+    //   userId: "user_id"
+    // },
+    encryptOAuthTokens: true, // Encrypt OAuth tokens before storing them in the database
+    storeAccountCookie: true, // Store account data after OAuth flow in a cookie (useful for database-less flows)
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ["google", "zoom", "email-password"], // or async (request) => ["google", "github"]
+      allowDifferentEmails: true
+    }
   },
   trustedOrigins: [
     process.env.BETTER_AUTH_URL!,

@@ -1,5 +1,9 @@
 export const routes = {
-  dashboard: () => "/dashboard",
+  dashboard: {
+    root: () => "/dashboard",
+    integrations: () => "/dashboard/integrations",
+    account: () => "/dashboard/account",
+  },
   authParent: () => "/auth",
   auth: {
     signIn: () => "/auth/sign-in",

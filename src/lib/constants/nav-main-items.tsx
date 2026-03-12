@@ -4,6 +4,8 @@ import {
   BotIcon,
   BookOpenIcon,
   Settings2Icon,
+  Plug2Icon,
+  UserCircleIcon,
 } from "lucide-react";
 
 export const navMainExample: NavMainItemType[] = [
@@ -95,5 +97,17 @@ export const navMainExample: NavMainItemType[] = [
         url: "#",
       },
     ],
+  },
+  {
+    title: "Integrations",
+    url: "/dashboard/integrations",
+    icon: <Plug2Icon />,
+    items: [],
+  },
+  {
+    title: "Account",
+    url: "/dashboard/account",
+    icon: <UserCircleIcon />,
+    items: [],
   },
 ];

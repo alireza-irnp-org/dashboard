@@ -30,7 +30,7 @@ type ResetPasswordParams = {
   newPassword: string;
 };
 
-type SocialProvider = "google" | "github" | "facebook" | "discord";
+type SocialProvider = "google" | "github" | "zoom";
 
 /** Social login hook */
 export function useSocialLogin() {
@@ -38,9 +38,9 @@ export function useSocialLogin() {
     mutationFn: async (provider: SocialProvider) => {
       await authClient.signIn.social({
         provider,
-        callbackURL: routes.dashboard(),
+        callbackURL: routes.dashboard.root(),
         errorCallbackURL: "/error",
-        newUserCallbackURL: routes.dashboard(),
+        newUserCallbackURL: routes.dashboard.root(),
         disableRedirect: false,
       });
     },
@@ -55,7 +55,7 @@ export function useEmailSignUp() {
         name: params.name,
         email: params.email,
         password: params.password,
-        callbackURL: routes.dashboard(),
+        callbackURL: routes.dashboard.root(),
       });
 
       if (result.error) {
@@ -77,7 +77,7 @@ export function useEmailSignIn() {
         email,
         password,
         rememberMe,
-        callbackURL: routes.dashboard(),
+        callbackURL: routes.dashboard.root(),
       });
 
       if (result.error) {
@@ -131,7 +131,7 @@ export function useResendVerificationEmail() {
     mutationFn: async ({ email }: ResendVerificationParams) => {
       const result = await authClient.sendVerificationEmail({
         email,
-        callbackURL: routes.dashboard(),
+        callbackURL: routes.dashboard.root(),
       });
 
       if (result.error) {
@@ -150,6 +150,41 @@ export function useResetPassword() {
       const result = await authClient.resetPassword({ token, newPassword });
 
       if (result.error) {
+        throw result.error;
+      }
+
+      return result;
+    },
+  });
+}
+
+type LinkSocialParams = {
+  provider: SocialProvider;
+  callbackURL?: string;
+};
+
+/** Link a social provider to an existing account */
+export function useLinkSocial() {
+  return useMutation({
+    mutationFn: async ({ provider, callbackURL = routes.dashboard.integrations() }: LinkSocialParams) => {
+      const result = await authClient.linkSocial({ provider, callbackURL });
+
+      if (result?.error) {
+        throw result.error;
+      }
+
+      return result;
+    },
+  });
+}
+
+/** Unlink a social provider from the current account */
+export function useUnlinkSocial() {
+  return useMutation({
+    mutationFn: async (provider: SocialProvider) => {
+      const result = await authClient.unlinkAccount({ providerId: provider });
+
+      if (result?.error) {
         throw result.error;
       }
 
