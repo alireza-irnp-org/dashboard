@@ -1,10 +1,6 @@
-import { SuspendFallback } from "@/components/suspend-fallback";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { ThemeProvider } from "@/providers/theme-provider";
+import { Providers } from "@/providers/root-providers";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
-import NextTopLoader from "nextjs-toploader";
-import { Suspense } from "react";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -26,26 +22,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NextTopLoader color="var(--primary)" showSpinner={false} />
-        <TooltipProvider delayDuration={10}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {/* suspend and show a fallback spinner while the child components are loading or waiting for data */}
-            <Suspense fallback={<SuspendFallback />}>{children}</Suspense>
-          </ThemeProvider>
-        </TooltipProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

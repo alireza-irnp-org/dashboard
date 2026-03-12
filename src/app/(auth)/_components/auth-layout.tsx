@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ReactNode } from "react";
 
 export const authClassNames = {
-  card: "dark:bg-card/50 border-ring/20 border shadow-lg backdrop-blur-2xl",
+  card: "dark:bg-card/20 shadow-lg backdrop-blur-2xl",
   cardTitle: "text-center text-lg",
 };
 
@@ -16,7 +16,7 @@ export function AuthContainer({ children }: { children: ReactNode }) {
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{
         duration: 0.6,
-        ease: [0.16, 1, 0.3, 1], // smooth "app-like" easing
+        ease: [0.16, 1, 0.3, 1],
       }}
     >
       {children}
@@ -24,26 +24,22 @@ export function AuthContainer({ children }: { children: ReactNode }) {
   );
 }
 
-interface LayoutProps {
-  children: ReactNode;
-}
-
-export function AuthLayout({ children }: LayoutProps) {
+export function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <div className="relative h-screen w-screen overflow-hidden">
-      {/* Background Image */}
+      {/* Dark theme background */}
       <div
-        className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 -z-10 hidden bg-cover bg-center bg-no-repeat dark:block"
         style={{
           backgroundImage: `url(${granientBackground.src})`,
         }}
       />
 
-      {/* Optional dark overlay for better contrast */}
-      {/* <div className="absolute inset-0 -z-10 bg-black/30" /> */}
+      {/* Dark overlay */}
+      <div className="absolute inset-0 -z-10 hidden bg-black/70 dark:block" />
 
       {/* Page Content */}
-      <div className="dark relative z-10 flex h-full w-full items-center justify-center">
+      <div className="relative z-10 flex h-full w-full items-center justify-center">
         <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
           <div className="w-full max-w-sm">{children}</div>
         </div>
