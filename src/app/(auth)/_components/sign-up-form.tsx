@@ -1,13 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Field,
   FieldDescription,
@@ -18,28 +12,31 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import googleLogo from "@/images/icons/google.svg";
-import {
-  handleEmailSignUp,
-  handleGoogleLogin,
-} from "@/lib/auth/actions/sign-in";
+
+import { useEmailSignUp, useSocialLogin } from "@/lib/auth/hooks/use-auth";
+
 import { routes } from "@/lib/constants/routes";
 import { cn } from "@/lib/utils";
 import { Eye, EyeOff } from "lucide-react";
+
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
 import { SubmitEvent, useState } from "react";
 import { z } from "zod";
+
 import { authClassNames, AuthContainer } from "./auth-layout";
 
-// Add confirmPassword and ensure it matches password
 const signUpSchema = z
   .object({
     name: z
       .string()
       .min(1, { message: "Name is required" })
       .max(100, { message: "Name is too long" }),
+
     email: z.email("Invalid email address"),
+
     password: z
       .string()
       .min(8, "Password must be at least 8 characters.")
@@ -47,6 +44,7 @@ const signUpSchema = z
       .regex(/[A-Z]/, "Password must contain at least one uppercase letter.")
       .regex(/[a-z]/, "Password must contain at least one lowercase letter.")
       .regex(/[0-9]/, "Password must contain at least one number."),
+
     confirmPassword: z.string().min(1, "Confirm your password"),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -56,9 +54,12 @@ const signUpSchema = z
 
 export function SignUpForm() {
   const router = useRouter();
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const emailSignUp = useEmailSignUp();
+  const socialLogin = useSocialLogin();
+
   const [formError, setFormError] = useState<string | null>(null);
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -66,8 +67,9 @@ export function SignUpForm() {
     Partial<Record<keyof z.infer<typeof signUpSchema>, string>>
   >({});
 
-  async function onSubmit(event: SubmitEvent<HTMLFormElement>) {
+  function onSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
+
     setFormError(null);
     setFieldErrors({});
 
@@ -84,48 +86,46 @@ export function SignUpForm() {
 
     if (!parsed.success) {
       const errors: Partial<Record<keyof typeof values, string>> = {};
+
       for (const issue of parsed.error.issues) {
         const path = issue.path[0] as keyof typeof values;
         errors[path] = issue.message;
       }
+
       setFieldErrors(errors);
       return;
     }
 
-    try {
-      setIsSubmitting(true);
-
-      await handleEmailSignUp(parsed.data);
-
-      const encodedEmail = encodeURIComponent(parsed.data.email);
-      router.push(`/auth/pending-email-verification?email=${encodedEmail}`);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      const code = err?.code as string | undefined;
-      const message = err?.message as string | undefined;
-
-      if (code === "PASSWORD_TOO_SHORT") {
-        setFieldErrors((prev) => ({
-          ...prev,
-          password: "Password too short",
-        }));
-      } else {
-        setFormError(message ?? "Unable to sign up. Please try again.");
+    emailSignUp.mutate(
+      {
+        name: parsed.data.name,
+        email: parsed.data.email,
+        password: parsed.data.password,
+      },
+      {
+        onSuccess: () => {
+          const encodedEmail = encodeURIComponent(parsed.data.email);
+    
+          router.push(
+            `${routes.auth.pendingEmailVerification()}?email=${encodedEmail}`
+          );
+        },
+        onError: (err: any) => {
+          const code = err?.code as string | undefined;
+          const message = err?.message as string | undefined;
+    
+          setFormError(message ?? "Unable to sign up. Please try again.");
+        },
       }
-    } finally {
-      setIsSubmitting(false);
-    }
+    );
   }
 
   async function onGoogleLogin() {
-    try {
-      setIsGoogleLoading(true);
-      await handleGoogleLogin();
-    } catch (err) {
-      setFormError("Google login failed. Please try again.");
-    } finally {
-      setIsGoogleLoading(false);
-    }
+    socialLogin.mutate("google", {
+      onError: () => {
+        setFormError("Google login failed. Please try again.");
+      },
+    });
   }
 
   return (
@@ -135,9 +135,6 @@ export function SignUpForm() {
           <CardTitle className={cn(authClassNames.cardTitle)}>
             Create an account
           </CardTitle>
-          {/* <CardDescription>
-            Sign up with your email and we&apos;ll send you a verification link.
-          </CardDescription> */}
         </CardHeader>
 
         <CardContent>
@@ -146,7 +143,9 @@ export function SignUpForm() {
               {/* Name */}
               <Field>
                 <FieldLabel htmlFor="name">Name</FieldLabel>
+
                 <Input id="name" name="name" placeholder="name" />
+
                 {fieldErrors.name && (
                   <FieldError>{fieldErrors.name}</FieldError>
                 )}
@@ -155,12 +154,14 @@ export function SignUpForm() {
               {/* Email */}
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
+
                 <Input
                   id="email"
                   name="email"
                   placeholder="email"
                   autoComplete="email"
                 />
+
                 {fieldErrors.email && (
                   <FieldError>{fieldErrors.email}</FieldError>
                 )}
@@ -169,6 +170,7 @@ export function SignUpForm() {
               {/* Password */}
               <Field>
                 <FieldLabel htmlFor="password">Password</FieldLabel>
+
                 <div className="relative">
                   <Input
                     id="password"
@@ -178,6 +180,7 @@ export function SignUpForm() {
                     autoComplete="new-password"
                     className="pr-10"
                   />
+
                   <Button
                     variant="ghost"
                     type="button"
@@ -187,6 +190,7 @@ export function SignUpForm() {
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </Button>
                 </div>
+
                 {fieldErrors.password && (
                   <FieldError>{fieldErrors.password}</FieldError>
                 )}
@@ -197,6 +201,7 @@ export function SignUpForm() {
                 <FieldLabel htmlFor="confirmPassword">
                   Confirm Password
                 </FieldLabel>
+
                 <div className="relative">
                   <Input
                     id="confirmPassword"
@@ -206,6 +211,7 @@ export function SignUpForm() {
                     autoComplete="new-password"
                     className="pr-10"
                   />
+
                   <Button
                     variant="ghost"
                     type="button"
@@ -219,22 +225,34 @@ export function SignUpForm() {
                     )}
                   </Button>
                 </div>
+
                 {fieldErrors.confirmPassword && (
                   <FieldError>{fieldErrors.confirmPassword}</FieldError>
                 )}
               </Field>
 
-              {/* Form Errors + Buttons */}
-              <Field>
-                {formError && <FieldError>{formError}</FieldError>}
+              {/* Form Errors */}
+              {formError && (
+                <Field>
+                  <FieldError>{formError}</FieldError>
+                </Field>
+              )}
 
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting && <Spinner />}
+              {/* Submit */}
+              <Field>
+                <Button type="submit" disabled={emailSignUp.isPending}>
+                  {emailSignUp.isPending && <Spinner />}
                   Sign up
                 </Button>
 
-                <Button variant="outline" type="button" onClick={onGoogleLogin}>
-                  {isGoogleLoading && <Spinner />}
+                {/* Google login */}
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={onGoogleLogin}
+                  disabled={socialLogin.isPending}
+                >
+                  {socialLogin.isPending && <Spinner />}
                   <Image
                     src={googleLogo}
                     alt="Google"

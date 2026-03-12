@@ -1,13 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Field,
   FieldDescription,
@@ -18,10 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import googleLogo from "@/images/icons/google.svg";
-import {
-  handleEmailSignIn,
-  handleGoogleLogin,
-} from "@/lib/auth/actions/sign-in";
+import { useEmailSignIn, useSocialLogin } from "@/lib/auth/hooks/use-auth";
 import { routes } from "@/lib/constants/routes";
 import { cn } from "@/lib/utils";
 import { Eye, EyeOff } from "lucide-react";
@@ -40,24 +31,23 @@ const loginSchema = z.object({
 export function LoginForm() {
   const router = useRouter();
 
+  const emailSignIn = useEmailSignIn();
+  const socialLogin = useSocialLogin();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const [formError, setFormError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<
     Partial<Record<keyof z.infer<typeof loginSchema>, string>>
   >({});
 
-  async function onSubmit() {
+  function onSubmit() {
     setFormError(null);
     setFieldErrors({});
 
     const values = { email, password };
-
     const parsed = loginSchema.safeParse(values);
 
     if (!parsed.success) {
@@ -70,54 +60,41 @@ export function LoginForm() {
       return;
     }
 
-    try {
-      setIsSubmitting(true);
+    emailSignIn.mutate(parsed.data, {
+      onError: (err: any) => {
+        const code = err?.code as string | undefined;
+        const message = err?.message as string | undefined;
 
-      await handleEmailSignIn(parsed.data);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      const code = err?.code as string | undefined;
-      const message = err?.message as string | undefined;
+        if (code === "EMAIL_NOT_VERIFIED") {
+          router.push(
+            `${routes.auth.pendingEmailVerification()}?email=${encodeURIComponent(
+              email,
+            )}`,
+          );
+          return;
+        }
 
-      if (code === "EMAIL_NOT_VERIFIED") {
-        router.push(
-          `/auth/pending-email-verification?email=${encodeURIComponent(email)}`,
-        );
-        return;
-      }
-
-      if (code === "PASSWORD_TOO_SHORT") {
-        setFieldErrors((prev) => ({
-          ...prev,
-          password: "Password too short",
-        }));
-      } else {
         setFormError(message ?? "Unable to login. Please try again.");
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
+      },
+    });
   }
 
-  async function onGoogleLogin() {
-    try {
-      setIsGoogleLoading(true);
-      await handleGoogleLogin();
-    } catch (err) {
-      setFormError("Google login failed. Please try again.");
-    } finally {
-      setIsGoogleLoading(false);
-    }
+  function onGoogleLogin() {
+    socialLogin.mutate("google", {
+      onError: () => {
+        setFormError("Google login failed. Please try again.");
+      },
+    });
   }
+
+  const isSubmitting = emailSignIn.isPending;
+  const isGoogleLoading = socialLogin.isPending;
 
   return (
     <AuthContainer>
       <Card className={cn(authClassNames.card)}>
         <CardHeader>
           <CardTitle className={cn(authClassNames.cardTitle)}>Login</CardTitle>
-          {/* <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription> */}
         </CardHeader>
 
         <CardContent>
@@ -135,7 +112,6 @@ export function LoginForm() {
                 <Input
                   id="email"
                   name="email"
-                  // type="email"
                   placeholder="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -152,7 +128,7 @@ export function LoginForm() {
                   <FieldLabel htmlFor="password">Password</FieldLabel>
 
                   <Link
-                    href="/auth/reset-password"
+                    href={routes.auth.resetPassword()}
                     className="text-muted-foreground ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
                     Forgot your password?

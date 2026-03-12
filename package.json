@@ -21,6 +21,7 @@
     "@better-auth/expo": "^1.5.4",
     "@floating-ui/react": "^0.27.18",
     "@react-email/components": "^1.0.8",
+    "@tanstack/react-query": "^5.90.21",
     "ai": "^6.0.101",
     "assistant-stream": "^0.3.4",
     "better-auth": "^1.4.18",
@@ -64,6 +65,7 @@
   "devDependencies": {
     "@better-auth/cli": "^1.4.18",
     "@tailwindcss/postcss": "^4",
+    "@tanstack/eslint-plugin-query": "^5.91.4",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20",
     "@types/nodemailer": "^7.0.11",

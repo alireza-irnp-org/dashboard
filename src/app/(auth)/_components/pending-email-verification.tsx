@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { authClient } from "@/lib/auth/auth-client";
+import { useResendVerificationEmail } from "@/lib/auth/hooks/use-auth";
 import { routes } from "@/lib/constants/routes";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -35,11 +35,12 @@ export function PendingEmailVerification() {
 
   const [email, setEmail] = useState(pendingEmail);
   const [status, setStatus] = useState<Status | null>(null);
-  const [isSending, setIsSending] = useState(false);
+
+  const resendMutation = useResendVerificationEmail();
 
   const descriptionEmail = email.trim() || pendingEmail || "your inbox";
 
-  async function handleResend() {
+  function handleResend() {
     if (!email.trim()) {
       setStatus({
         type: "error",
@@ -48,37 +49,29 @@ export function PendingEmailVerification() {
       return;
     }
 
-    setIsSending(true);
     setStatus(null);
 
-    try {
-      const { error } = await authClient.sendVerificationEmail({
-        email: email.trim(),
-        callbackURL: "/dashboard",
-      });
-
-      if (error) {
-        throw new Error(
-          error.message || "Unable to resend the verification email.",
-        );
-      }
-
-      setStatus({
-        type: "success",
-        message:
-          "A fresh verification link has been sent. Please check your inbox.",
-      });
-    } catch (error) {
-      setStatus({
-        type: "error",
-        message:
-          error instanceof Error
-            ? error.message
-            : "Unable to resend the verification email.",
-      });
-    } finally {
-      setIsSending(false);
-    }
+    resendMutation.mutate(
+      { email: email.trim() },
+      {
+        onSuccess: () => {
+          setStatus({
+            type: "success",
+            message:
+              "A fresh verification link has been sent. Please check your inbox.",
+          });
+        },
+        onError: (error) => {
+          setStatus({
+            type: "error",
+            message:
+              error instanceof Error
+                ? error.message
+                : "Unable to resend the verification email.",
+          });
+        },
+      },
+    );
   }
 
   return (
@@ -130,10 +123,10 @@ export function PendingEmailVerification() {
             <Field>
               <Button
                 type="button"
-                disabled={!email.trim()}
+                disabled={!email.trim() || resendMutation.isPending}
                 onClick={handleResend}
               >
-                {isSending && <Spinner />}
+                {resendMutation.isPending && <Spinner />}
                 Resend verification email
               </Button>
 

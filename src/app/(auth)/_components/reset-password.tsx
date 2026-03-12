@@ -1,6 +1,6 @@
 "use client";
 
-import { authClient } from "@/lib/auth/auth-client";
+import Link from "next/link";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -19,9 +19,11 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
+
 import { routes } from "@/lib/constants/routes";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
+
+import { useRequestPasswordReset } from "@/lib/auth/hooks/use-auth";
 import { authClassNames, AuthContainer } from "./auth-layout";
 
 type Status = {
@@ -32,9 +34,10 @@ type Status = {
 export function ResetPassword() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status | null>(null);
-  const [isSending, setIsSending] = useState(false);
 
-  async function handleReset() {
+  const resetMutation = useRequestPasswordReset();
+
+  function handleReset() {
     if (!email.trim()) {
       setStatus({
         type: "error",
@@ -43,36 +46,28 @@ export function ResetPassword() {
       return;
     }
 
-    setIsSending(true);
     setStatus(null);
 
-    try {
-      const { error } = await authClient.requestPasswordReset({
-        email: email.trim(),
-        redirectTo: "/auth/new-password",
-      });
-
-      if (error) {
-        throw new Error(
-          error.message || "Unable to send password reset email.",
-        );
-      }
-
-      setStatus({
-        type: "success",
-        message: "Password reset link sent. Please check your inbox.",
-      });
-    } catch (error) {
-      setStatus({
-        type: "error",
-        message:
-          error instanceof Error
-            ? error.message
-            : "Unable to send password reset email.",
-      });
-    } finally {
-      setIsSending(false);
-    }
+    resetMutation.mutate(
+      { email: email.trim() },
+      {
+        onSuccess: () => {
+          setStatus({
+            type: "success",
+            message: "Password reset link sent. Please check your inbox.",
+          });
+        },
+        onError: (error) => {
+          setStatus({
+            type: "error",
+            message:
+              error instanceof Error
+                ? error.message
+                : "Unable to send password reset email.",
+          });
+        },
+      },
+    );
   }
 
   return (
@@ -123,10 +118,10 @@ export function ResetPassword() {
             <Field>
               <Button
                 type="button"
-                disabled={!email.trim()}
+                disabled={!email.trim() || resetMutation.isPending}
                 onClick={handleReset}
               >
-                {isSending && <Spinner />}
+                {resetMutation.isPending && <Spinner />}
                 Send reset link
               </Button>
 

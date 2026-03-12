@@ -10,9 +10,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// } from "@/components/animate-ui/components/radix/dropdown-menu";
 import { Spinner } from "@/components/ui/spinner";
-import { useSignOut } from "@/lib/auth/actions/sign-out";
+import { useSignOut } from "@/lib/auth/hooks/use-auth";
 import {
   BadgeCheckIcon,
   BellIcon,
@@ -49,12 +48,8 @@ export function HeaderUserDropdown({
         asChild
         className="cursor-pointer transition-opacity duration-200 hover:opacity-80 data-[state=open]:opacity-80"
       >
-        {/* <Avatar className="h-8 w-8 rounded-lg">
-          <AvatarImage src={user.avatar} alt={user.name} />
-          <AvatarFallback className="rounded-lg">{userInitials}</AvatarFallback>
-        </Avatar> */}
         <Avatar className="relative h-8 w-8 rounded-full">
-          {isPending ? (
+          {isPending || signOut.isPending ? (
             <div className="soft-pulse bg-background absolute inset-0 rounded-full" />
           ) : (
             <>
@@ -75,14 +70,8 @@ export function HeaderUserDropdown({
       >
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-2 py-1.5 text-left text-sm">
-            {/* <Avatar className="h-8 w-8 rounded-lg">
-              <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback className="rounded-lg">
-                {userInitials}
-              </AvatarFallback>
-            </Avatar> */}
             <Avatar className="relative h-8 w-8 rounded-full">
-              {isPending ? (
+              {isPending || signOut.isPending ? (
                 <div className="soft-pulse bg-background absolute inset-0 rounded-full" />
               ) : (
                 <>
@@ -128,8 +117,14 @@ export function HeaderUserDropdown({
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem onClick={signOut}>
-          <LogOutIcon className="mr-2 h-4 w-4" />
+        <DropdownMenuItem
+          onClick={() => signOut.mutate()}
+          disabled={signOut.isPending}
+        >
+          {signOut.isPending && (
+            <Spinner className="mr-2 h-4 w-4" data-icon="inline-start" />
+          )}
+          {!signOut.isPending && <LogOutIcon className="mr-2 h-4 w-4" />}
           Log out
         </DropdownMenuItem>
       </DropdownMenuContent>

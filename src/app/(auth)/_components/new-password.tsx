@@ -1,8 +1,9 @@
 "use client";
 
-import { authClient } from "@/lib/auth/auth-client";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,20 +20,13 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-
-import { Eye, EyeOff } from "lucide-react";
-import Link from "next/link";
-
 import { Spinner } from "@/components/ui/spinner";
+
+import { useResetPassword } from "@/lib/auth/hooks/use-auth";
 import { routes } from "@/lib/constants/routes";
 import { cn } from "@/lib/utils";
-import { z } from "zod";
+import { Eye, EyeOff } from "lucide-react";
 import { authClassNames, AuthContainer } from "./auth-layout";
-
-type Status = {
-  type: "success" | "error";
-  message: string;
-};
 
 const passwordSchema = z
   .object({
@@ -50,67 +44,55 @@ const passwordSchema = z
     path: ["confirmPassword"],
   });
 
+type Status = {
+  type: "success" | "error";
+  message: string;
+};
+
 export function NewPassword() {
   const searchParams = useSearchParams();
   const router = useRouter();
-
   const token = searchParams.get("token") ?? "";
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   const [status, setStatus] = useState<Status | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
-  async function handleReset() {
+  const resetMutation = useResetPassword();
+
+  function handleReset() {
     setStatus(null);
 
-    const validation = passwordSchema.safeParse({
-      password,
-      confirmPassword,
-    });
-
+    const validation = passwordSchema.safeParse({ password, confirmPassword });
     if (!validation.success) {
       const error = validation.error.issues[0];
-      setStatus({
-        type: "error",
-        message: error.message,
-      });
+      setStatus({ type: "error", message: error.message });
       return;
     }
 
-    setIsLoading(true);
-
-    try {
-      const { error } = await authClient.resetPassword({
-        token,
-        newPassword: password,
-      });
-
-      if (error) {
-        throw new Error(error.message || "Unable to reset password.");
-      }
-
-      setStatus({
-        type: "success",
-        message: "Password updated successfully. Redirecting to sign in...",
-      });
-
-      setTimeout(() => {
-        router.push("/auth/sign-in");
-      }, 2000);
-    } catch (error) {
-      setStatus({
-        type: "error",
-        message:
-          error instanceof Error ? error.message : "Unable to reset password.",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    resetMutation.mutate(
+      { token, newPassword: password },
+      {
+        onSuccess: () => {
+          setStatus({
+            type: "success",
+            message: "Password updated successfully. Redirecting to sign in...",
+          });
+          setTimeout(() => router.push(routes.auth.signIn()), 2000);
+        },
+        onError: (error) => {
+          setStatus({
+            type: "error",
+            message:
+              error instanceof Error
+                ? error.message
+                : "Unable to reset password.",
+          });
+        },
+      },
+    );
   }
 
   return (
@@ -129,7 +111,6 @@ export function NewPassword() {
           <FieldGroup className="gap-4">
             <Field>
               <FieldLabel htmlFor="password">New Password</FieldLabel>
-
               <div className="relative">
                 <Input
                   id="password"
@@ -140,7 +121,6 @@ export function NewPassword() {
                   onChange={(e) => setPassword(e.target.value)}
                   className="pr-10"
                 />
-
                 <Button
                   variant="ghost"
                   type="button"
@@ -156,7 +136,6 @@ export function NewPassword() {
               <FieldLabel htmlFor="confirm-password">
                 Confirm Password
               </FieldLabel>
-
               <div className="relative">
                 <Input
                   id="confirm-password"
@@ -167,7 +146,6 @@ export function NewPassword() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="pr-10"
                 />
-
                 <Button
                   variant="ghost"
                   type="button"
@@ -200,13 +178,14 @@ export function NewPassword() {
             <Field>
               <Button
                 type="button"
-                disabled={!password || !confirmPassword}
+                disabled={
+                  !password || !confirmPassword || resetMutation.isPending
+                }
                 onClick={handleReset}
               >
-                {isLoading && <Spinner />}
+                {resetMutation.isPending && <Spinner />}
                 Update password
               </Button>
-
               <FieldDescription className="text-center">
                 <Link href={routes.auth.signIn()}>Back to sign in</Link>
               </FieldDescription>
