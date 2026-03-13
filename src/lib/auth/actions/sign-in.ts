@@ -2,28 +2,64 @@ import { authClient } from "@/lib/auth/auth-client"; //import the auth client
 
 export const handleGoogleLogin = async () => {
   await authClient.signIn.social({
-    /**
-     * The social provider ID
-     * @example "github", "google", "apple"
-     */
     provider: "google",
-    /**
-     * A URL to redirect after the user authenticates with the provider
-     * @default "/"
-     */
     callbackURL: "/dashboard",
-    /**
-     * A URL to redirect if an error occurs during the sign in process
-     */
     errorCallbackURL: "/error",
-    /**
-     * A URL to redirect if the user is newly registered
-     */
     newUserCallbackURL: "/dashboard",
-    /**
-     * disable the automatic redirect to the provider.
-     * @default false
-     */
     disableRedirect: false,
   });
+};
+
+export const handleEmailSignUp = async (params: {
+  name: string;
+  email: string;
+  password: string;
+}) => {
+  const { name, email, password } = params;
+
+  const result = await authClient.signUp.email({
+    name,
+    email,
+    password,
+    callbackURL: "/dashboard",
+  });
+
+  if (result.error) {
+    throw result.error;
+  }
+
+  return result;
+};
+
+export const handleEmailSignIn = async (params: {
+  email: string;
+  password: string;
+  rememberMe?: boolean;
+}) => {
+  const { email, password, rememberMe = true } = params;
+
+  const result = await authClient.signIn.email(
+    {
+      email,
+      password,
+      rememberMe,
+      callbackURL: "/dashboard",
+    },
+    // {
+    //   onError: (ctx) => {
+    //     // Handle the error
+    //     if (ctx.error.status === 403) {
+    //       alert("Please verify your email address");
+    //     }
+    //     //you can also show the original error message
+    //     alert(ctx.error.message);
+    //   },
+    // },
+  );
+
+  if (result.error) {
+    throw result.error;
+  }
+
+  return result;
 };
