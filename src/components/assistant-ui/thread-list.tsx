@@ -9,6 +9,7 @@ import {
   useThreadListItemRuntime,
 } from "@assistant-ui/react";
 import { ArchiveIcon, DownloadIcon, MoreHorizontalIcon, PencilIcon, PlusIcon, Trash2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { type FC, useEffect, useRef, useState } from "react";
 
 export const ThreadList: FC = () => {
@@ -26,11 +27,13 @@ export const ThreadList: FC = () => {
 };
 
 const ThreadListNew: FC = () => {
+  const router = useRouter();
   return (
     <ThreadListPrimitive.New asChild>
       <Button
         variant="outline"
         className="aui-thread-list-new hover:bg-muted data-active:bg-muted h-9 justify-start gap-2 rounded-lg px-3 text-sm"
+        onClick={() => router.push("/chat")}
       >
         <PlusIcon className="size-4" />
         New Thread
@@ -58,6 +61,13 @@ const ThreadListSkeleton: FC = () => {
 
 const ThreadListItem: FC = () => {
   const [isRenaming, setIsRenaming] = useState(false);
+  const runtime = useThreadListItemRuntime();
+  const router = useRouter();
+
+  const handleThreadClick = () => {
+    const remoteId = runtime.getState().remoteId;
+    if (remoteId) router.push(`/chat/${remoteId}`);
+  };
 
   if (isRenaming) {
     return <ThreadListItemRenameInput onDone={() => setIsRenaming(false)} />;
@@ -65,7 +75,10 @@ const ThreadListItem: FC = () => {
 
   return (
     <ThreadListItemPrimitive.Root className="aui-thread-list-item group hover:bg-muted focus-visible:bg-muted data-active:bg-muted flex h-9 items-center gap-2 rounded-lg transition-colors focus-visible:outline-none">
-      <ThreadListItemPrimitive.Trigger className="aui-thread-list-item-trigger flex h-full min-w-0 flex-1 items-center truncate px-3 text-start text-sm">
+      <ThreadListItemPrimitive.Trigger
+        className="aui-thread-list-item-trigger flex h-full min-w-0 flex-1 items-center truncate px-3 text-start text-sm"
+        onClick={handleThreadClick}
+      >
         <ThreadListItemPrimitive.Title fallback="New Chat" />
       </ThreadListItemPrimitive.Trigger>
       <ThreadListItemMore onRename={() => setIsRenaming(true)} />

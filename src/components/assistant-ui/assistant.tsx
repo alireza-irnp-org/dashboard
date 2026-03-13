@@ -29,6 +29,7 @@ import { unstable_useRemoteThreadListRuntime as useRemoteThreadListRuntime } fro
 import { DevToolsModal } from "@assistant-ui/react-devtools";
 import { lastAssistantMessageIsCompleteWithToolCalls } from "ai";
 import { useEffect, useMemo } from "react";
+import { usePathname } from "next/navigation";
 import { useVoteStore } from "@/lib/vote-store";
 import { createAssistantStream } from "assistant-stream";
 import { z } from "zod";
@@ -148,6 +149,8 @@ function makeHistoryAdapter(remoteId: string | undefined): ThreadHistoryAdapter 
 }
 
 export const Assistant = () => {
+  const pathname = usePathname();
+  const threadId = pathname.match(/^\/chat\/(.+)/)?.[1];
   const aui = useAui({ tools: Tools({ toolkit }) });
 
   const runtime = useRemoteThreadListRuntime({
@@ -247,6 +250,15 @@ export const Assistant = () => {
       });
     },
   });
+
+  useEffect(() => {
+    if (threadId) {
+      runtime.switchToThread(threadId);
+    } else {
+      runtime.switchToNewThread();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [threadId]);
 
   return (
     <AssistantRuntimeProvider runtime={runtime} aui={aui}>
