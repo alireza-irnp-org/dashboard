@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth/auth";
-import { createZoomClientForUser } from "@/lib/zoom/zoom-client";
+import { getZoomClient } from "@/lib/zoom/zoom-client";
 
 export async function GET(req: Request) {
   const session = await auth.api.getSession({ headers: req.headers });
@@ -8,7 +8,7 @@ export async function GET(req: Request) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const zoom = await createZoomClientForUser(session.user.id);
+  const zoom = await getZoomClient(req.headers);
 
   if (!zoom) {
     return Response.json(
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const zoom = await createZoomClientForUser(session.user.id);
+  const zoom = await getZoomClient(req.headers);
 
   if (!zoom) {
     return Response.json(

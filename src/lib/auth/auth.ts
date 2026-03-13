@@ -63,11 +63,11 @@ export const auth = betterAuth({
     //https://www.better-auth.com/docs/authentication/google
     //https://console.cloud.google.com/apis/dashboard
     google: {
-      // prompt: "select_account",
-      prompt: "select_account consent",
+      prompt: "select_account",
+      // prompt: "select_account consent",
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      accessType: "offline",
+      // accessType: "offline",
     },
     zoom: {
       clientId: process.env.ZOOM_CLIENT_ID as string,

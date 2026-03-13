@@ -1,5 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { account } from "@/lib/auth/auth-schema";
+import { auth } from "@/lib/auth/auth";
 import { db } from "@/lib/db/index";
 
 // ---------------------------------------------------------------------------
@@ -166,24 +167,24 @@ export class ZoomClient {
 }
 
 // ---------------------------------------------------------------------------
-// Factory: resolve access token from DB and return a ready client
+// Factory: resolve decrypted access token via auth.api and return a ready client
 // ---------------------------------------------------------------------------
 
 /**
- * Creates a ZoomClient for the given user by looking up their stored
- * Zoom access token. Returns null if the user hasn't connected Zoom.
+ * Creates a ZoomClient for the current request by fetching the decrypted
+ * Zoom access token through Better Auth (handles encryptOAuthTokens).
+ * Returns null if Zoom is not connected.
  */
-export async function createZoomClientForUser(
-  userId: string
+export async function getZoomClient(
+  headers: Headers
 ): Promise<ZoomClient | null> {
-  const [zoomAccount] = await db
-    .select()
-    .from(account)
-    .where(and(eq(account.userId, userId), eq(account.providerId, "zoom")))
-    .limit(1);
+  const tokenData = await auth.api.getAccessToken({
+    headers,
+    body: { providerId: "zoom" },
+  });
 
-  if (!zoomAccount?.accessToken) return null;
-  return new ZoomClient(zoomAccount.accessToken);
+  if (!tokenData?.accessToken) return null;
+  return new ZoomClient(tokenData.accessToken);
 }
 
 /**

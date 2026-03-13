@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth/auth";
-import { createZoomClientForUser } from "@/lib/zoom/zoom-client";
+import { getZoomClient } from "@/lib/zoom/zoom-client";
 
 type Params = { params: Promise<{ meetingId: string }> };
 
@@ -10,7 +10,7 @@ export async function GET(req: Request, { params }: Params) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const zoom = await createZoomClientForUser(session.user.id);
+  const zoom = await getZoomClient(req.headers);
 
   if (!zoom) {
     return Response.json(
@@ -32,7 +32,7 @@ export async function PATCH(req: Request, { params }: Params) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const zoom = await createZoomClientForUser(session.user.id);
+  const zoom = await getZoomClient(req.headers);
 
   if (!zoom) {
     return Response.json(
@@ -55,7 +55,7 @@ export async function DELETE(req: Request, { params }: Params) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const zoom = await createZoomClientForUser(session.user.id);
+  const zoom = await getZoomClient(req.headers);
 
   if (!zoom) {
     return Response.json(
