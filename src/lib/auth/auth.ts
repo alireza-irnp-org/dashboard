@@ -9,7 +9,7 @@ import { expo } from "@better-auth/expo";
 import { render } from "@react-email/components";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { jwt, openAPI } from "better-auth/plugins";
+import { jwt, openAPI, bearer } from "better-auth/plugins";
 
 
 export const auth = betterAuth({
@@ -99,7 +99,7 @@ export const auth = betterAuth({
   advanced: {
     // useSecureCookies: true
   },
-  plugins: [nextCookies(), jwt(), openAPI(), expo()],
+  plugins: [nextCookies(), jwt(), bearer(), openAPI(), expo()],
 });
 
 // http://localhost:3000/api/auth/reference

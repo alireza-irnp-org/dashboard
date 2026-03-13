@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Spinner } from "@/components/ui/spinner";
 import { useSignOut } from "@/lib/auth/hooks/use-auth";
+import { proxiedAvatarUrl } from "@/lib/helpers/image";
 import {
   BadgeCheckIcon,
   BellIcon,
@@ -53,7 +54,7 @@ export function HeaderUserDropdown({
             <div className="soft-pulse bg-background absolute inset-0 rounded-full" />
           ) : (
             <>
-              <AvatarImage src={user.avatar} alt={user.name} />
+              <AvatarImage src={proxiedAvatarUrl(user.avatar)} alt={user.name} />
               <AvatarFallback className="rounded-full">
                 {userInitials}
               </AvatarFallback>
@@ -75,7 +76,7 @@ export function HeaderUserDropdown({
                 <div className="soft-pulse bg-background absolute inset-0 rounded-full" />
               ) : (
                 <>
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarImage src={proxiedAvatarUrl(user.avatar)} alt={user.name} />
                   <AvatarFallback className="rounded-full">
                     {userInitials}
                   </AvatarFallback>
