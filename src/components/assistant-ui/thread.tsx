@@ -20,7 +20,9 @@ import {
   MessagePrimitive,
   SuggestionPrimitive,
   ThreadPrimitive,
+  useMessage,
 } from "@assistant-ui/react";
+import { useVoteStore } from "@/lib/vote-store";
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -35,6 +37,8 @@ import {
   RefreshCwIcon,
   Square,
   SquareIcon,
+  ThumbsDownIcon,
+  ThumbsUpIcon,
   Volume2Icon,
 } from "lucide-react";
 import type { FC } from "react";
@@ -50,7 +54,7 @@ export const Thread: FC = () => {
     >
       <ThreadPrimitive.Viewport
         turnAnchor="top"
-        className="aui-thread-viewport relative flex flex-1 flex-col overflow-x-auto overflow-y-scroll scroll-smooth px-4 pt-4"
+        className="aui-thread-viewport relative flex flex-1 flex-col overflow-x-auto overflow-y-scroll px-4 pt-4"
       >
         <AuiIf condition={(s) => s.thread.isEmpty}>
           <ThreadWelcome />
@@ -266,10 +270,32 @@ const AssistantMessage: FC = () => {
 };
 
 const AssistantActionBar: FC = () => {
+  const messageId = useMessage((s) => s.id);
+  const currentVote = useVoteStore((s) => s.votes[messageId]);
+  const setVote = useVoteStore((s) => s.setVote);
+  const removeVote = useVoteStore((s) => s.removeVote);
+
+  const handleVote = (isUpvote: boolean) => {
+    if (currentVote === isUpvote) {
+      removeVote(messageId);
+      fetch("/api/votes", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messageId }),
+      }).catch(console.error);
+    } else {
+      setVote(messageId, isUpvote);
+      fetch("/api/votes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messageId, isUpvote }),
+      }).catch(console.error);
+    }
+  };
+
   return (
     <ActionBarPrimitive.Root
       hideWhenRunning
-      autohide="not-last"
       autohideFloat="single-branch"
       className="aui-assistant-action-bar-root text-muted-foreground data-floating:bg-background col-start-3 row-start-2 -ml-1 flex gap-1 data-floating:absolute data-floating:rounded-md data-floating:border data-floating:p-1 data-floating:shadow-sm"
     >
@@ -288,6 +314,20 @@ const AssistantActionBar: FC = () => {
           <RefreshCwIcon />
         </TooltipIconButton>
       </ActionBarPrimitive.Reload>
+      <TooltipIconButton
+        tooltip="Good response"
+        onClick={() => handleVote(true)}
+        className={currentVote === true ? "text-green-500" : ""}
+      >
+        <ThumbsUpIcon />
+      </TooltipIconButton>
+      <TooltipIconButton
+        tooltip="Bad response"
+        onClick={() => handleVote(false)}
+        className={currentVote === false ? "text-red-500" : ""}
+      >
+        <ThumbsDownIcon />
+      </TooltipIconButton>
       {/* <ActionBarPrimitive.Speak asChild>
         <TooltipIconButton tooltip="Read aloud">
           <Volume2Icon />

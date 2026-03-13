@@ -29,7 +29,7 @@ export async function POST(req: Request) {
     // model: openai("gpt-4o"),
     // model: azure(process.env.AZURE_OPENAI_ENDPOINT!),
     // model: google("gemini-2.5-flash"),
-    model: customAzure("gpt-5.2"),
+    model: customAzure("gpt-5.4"),
     messages: await convertToModelMessages(messages), // Note: async in v6
     tools: {
       get_weather: tool({

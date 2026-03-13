@@ -33,6 +33,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        // suppressHydrationWarning
       >
         <NextTopLoader color="var(--primary)" showSpinner={false} />
         <TooltipProvider delayDuration={10}>
