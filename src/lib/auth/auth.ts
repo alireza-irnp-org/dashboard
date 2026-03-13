@@ -9,7 +9,8 @@ import { expo } from "@better-auth/expo";
 import { render } from "@react-email/components";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { jwt } from "better-auth/plugins";
+import { jwt, openAPI } from "better-auth/plugins";
+
 
 export const auth = betterAuth({
   // database: new Database("./sqlite.db"),
@@ -48,15 +49,16 @@ export const auth = betterAuth({
     sendOnSignIn: false,
   },
   session: {
-    strategy: "jwt", // "compact" or "jwt" or "jwe"
-    expiresIn: 60 * 60 * 24 * 7, // 7 days
-    updateAge: 60 * 60 * 24, // refresh every 24h
+    // expiresIn: 60 * 60 * 24 * 7, // 7 days
+    // updateAge: 60 * 60 * 24, // refresh every 24h
+    expiresIn: 60 * 60 * 24 * 2, // 1 day for testing
+    updateAge: 60 * 60 * 24 * 1, // refresh every 10 seconds for testing
     cookieCache: {
-      strategy: "jwt",
+      strategy: "jwt", // "compact" or "jwt" or "jwe"
       enabled: true, // Enable caching session in cookie (default: `false`)
-      maxAge: 60 * 60 * 24 * 2, // 2 days
-      // refreshCache: true, // Enable stateless refresh
-      secure: true,
+      // maxAge: 60 * 60 * 24 * 2, // 2 days (session in coockie without revalidation with database)
+      maxAge: 10 * 60, // 30 seconds for testing
+      // refreshCache: true, // Refresh cookie cache when session is updated via updateAge
     },
   },
   socialProviders: {
@@ -80,7 +82,7 @@ export const auth = betterAuth({
     //   userId: "user_id"
     // },
     encryptOAuthTokens: true, // Encrypt OAuth tokens before storing them in the database
-    storeAccountCookie: true, // Store account data after OAuth flow in a cookie (useful for database-less flows)
+    storeAccountCookie: false, // Store account data after OAuth flow in a cookie (useful for database-less flows)
     accountLinking: {
       enabled: true,
       trustedProviders: ["google", "zoom", "email-password"], // or async (request) => ["google", "github"]
@@ -94,5 +96,10 @@ export const auth = betterAuth({
     "exp://",
     "exp://**",
   ],
-  plugins: [nextCookies(), jwt(), expo()],
+  advanced: {
+    // useSecureCookies: true
+  },
+  plugins: [nextCookies(), jwt(), openAPI(), expo()],
 });
+
+// http://localhost:3000/api/auth/reference

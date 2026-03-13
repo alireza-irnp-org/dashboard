@@ -2,8 +2,7 @@
 
 import * as React from "react";
 
-import { NavMain } from "@/components/dashboard/nav-main";
-// import { NavProjects } from "@/components/dashboard/nav-projects";
+import { NavMenu } from "@/components/dashboard/nav-menu";
 import { TeamSwitcher } from "@/components/dashboard/team-switcher";
 import {
   Sidebar,
@@ -11,10 +10,7 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-  } from "@/components/ui/sidebar";
-// } from "@/components/animate-ui/components/radix/sidebar";
-import { navMainExample } from "@/lib/constants/nav-main-items";
-// import { navProjectsExample } from "@/lib/constants/nav-projects-items";
+} from "@/components/ui/sidebar";
 import { teamSwitcherExample } from "@/lib/constants/team-switcher-items";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -24,8 +20,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher teams={teamSwitcherExample} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={navMainExample} />
-        {/* <NavProjects projects={navProjectsExample} /> */}
+        <NavMenu />
       </SidebarContent>
       <SidebarFooter>{/* <NavUser user={user} /> */}</SidebarFooter>
       <SidebarRail />

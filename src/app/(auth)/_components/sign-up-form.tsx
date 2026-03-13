@@ -121,7 +121,7 @@ export function SignUpForm() {
   }
 
   async function onGoogleLogin() {
-    socialLogin.mutate("google", {
+    socialLogin.mutate({ provider: "google" }, {
       onError: () => {
         setFormError("Google login failed. Please try again.");
       },

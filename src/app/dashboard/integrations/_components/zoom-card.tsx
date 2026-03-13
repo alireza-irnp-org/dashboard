@@ -1,5 +1,6 @@
 "use client";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,7 +14,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLinkSocial, useUnlinkSocial } from "@/lib/auth/hooks/use-auth";
-import { zoomKeys, useZoomMeetings, useZoomStatus } from "@/lib/zoom/use-zoom";
+import { zoomKeys, useZoomMeetings, useZoomProfile, useZoomStatus } from "@/lib/zoom/use-zoom";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { Calendar, Clock, ExternalLink, Link2, Link2Off, Users, Video } from "lucide-react";
@@ -22,6 +23,8 @@ import { toast } from "sonner";
 export function ZoomCard() {
   const { data: statusData, isLoading: statusLoading } = useZoomStatus();
   const isConnected = statusData?.connected ?? false;
+
+  const { data: profileData } = useZoomProfile({ enabled: isConnected });
 
   const {
     data: meetingsData,
@@ -58,13 +61,24 @@ export function ZoomCard() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#2D8CFF]/10">
-              <Video className="h-5 w-5 text-[#2D8CFF]" />
+            <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#2D8CFF]/10">
+              {isConnected && profileData?.pic_url ? (
+                <Avatar className="h-10 w-10 rounded-lg">
+                  <AvatarImage src={profileData.pic_url} alt={profileData.first_name} />
+                  <AvatarFallback className="rounded-lg bg-[#2D8CFF]/10 text-[#2D8CFF]">
+                    {profileData.first_name?.[0]}
+                  </AvatarFallback>
+                </Avatar>
+              ) : (
+                <Video className="h-5 w-5 text-[#2D8CFF]" />
+              )}
             </div>
             <div>
               <CardTitle className="text-base">Zoom</CardTitle>
               <CardDescription className="text-xs">
-                Video meetings &amp; webinars
+                {isConnected && profileData
+                  ? `${profileData.first_name} ${profileData.last_name}`
+                  : "Video meetings & webinars"}
               </CardDescription>
             </div>
           </div>

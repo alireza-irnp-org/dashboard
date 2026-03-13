@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { z } from "zod";
 import { authClassNames, AuthContainer } from "./auth-layout";
@@ -30,6 +30,8 @@ const loginSchema = z.object({
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") ?? undefined;
 
   const emailSignIn = useEmailSignIn();
   const socialLogin = useSocialLogin();
@@ -60,7 +62,7 @@ export function LoginForm() {
       return;
     }
 
-    emailSignIn.mutate(parsed.data, {
+    emailSignIn.mutate({ ...parsed.data, callbackURL: callbackUrl }, {
       onError: (err: any) => {
         const code = err?.code as string | undefined;
         const message = err?.message as string | undefined;
@@ -80,7 +82,7 @@ export function LoginForm() {
   }
 
   function onGoogleLogin() {
-    socialLogin.mutate("google", {
+    socialLogin.mutate({ provider: "google", callbackURL: callbackUrl }, {
       onError: () => {
         setFormError("Google login failed. Please try again.");
       },

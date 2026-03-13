@@ -15,6 +15,7 @@ type EmailSignInParams = {
   email: string;
   password: string;
   rememberMe?: boolean;
+  callbackURL?: string;
 };
 
 type PasswordResetParams = {
@@ -32,13 +33,18 @@ type ResetPasswordParams = {
 
 type SocialProvider = "google" | "github" | "zoom";
 
+type SocialLoginParams = {
+  provider: SocialProvider;
+  callbackURL?: string;
+};
+
 /** Social login hook */
 export function useSocialLogin() {
   return useMutation({
-    mutationFn: async (provider: SocialProvider) => {
+    mutationFn: async ({ provider, callbackURL = routes.dashboard.root() }: SocialLoginParams) => {
       await authClient.signIn.social({
         provider,
-        callbackURL: routes.dashboard.root(),
+        callbackURL,
         errorCallbackURL: "/error",
         newUserCallbackURL: routes.dashboard.root(),
         disableRedirect: false,
@@ -71,13 +77,13 @@ export function useEmailSignUp() {
 export function useEmailSignIn() {
   return useMutation({
     mutationFn: async (params: EmailSignInParams) => {
-      const { email, password, rememberMe = true } = params;
+      const { email, password, rememberMe = true, callbackURL } = params;
 
       const result = await authClient.signIn.email({
         email,
         password,
         rememberMe,
-        callbackURL: routes.dashboard.root(),
+        callbackURL: callbackURL ?? routes.dashboard.root(),
       });
 
       if (result.error) {
