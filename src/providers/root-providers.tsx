@@ -3,16 +3,9 @@
 import { SuspendFallback } from "@/components/suspend-fallback";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/providers/theme-provider";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import NextTopLoader from "nextjs-toploader";
 import { Suspense } from "react";
+import { TanstackProvider } from "./tanstack-provider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   // For hydration issues, use in specific components causing the issue not globally
@@ -27,10 +20,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
   //   return <></>;
   // }
 
-  const queryClient = new QueryClient();
-
   return (
-    <QueryClientProvider client={queryClient}>
+    <TanstackProvider>
       <TooltipProvider delayDuration={10}>
         <ThemeProvider
           attribute="class"
@@ -39,10 +30,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
           disableTransitionOnChange
         >
           <NextTopLoader color="var(--primary)" showSpinner={false} />
-          <ReactQueryDevtools initialIsOpen={false} />
           <Suspense fallback={<SuspendFallback />}>{children}</Suspense>
         </ThemeProvider>
       </TooltipProvider>
-    </QueryClientProvider>
+    </TanstackProvider>
   );
 }

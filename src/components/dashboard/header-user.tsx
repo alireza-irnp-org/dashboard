@@ -64,7 +64,7 @@ export function HeaderUserDropdown({
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
-        className="w-56 rounded-lg"
+        className="w-56 bg-popover/70 backdrop-blur"
         side="bottom"
         align="end"
         sideOffset={10}
