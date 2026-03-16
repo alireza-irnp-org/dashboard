@@ -13,7 +13,7 @@ export async function GET() {
       version: "1.0.0",
       description: "Internal API for the personal dashboard application.",
     },
-    servers: [{ url: "/api/orpc" }],
+    servers: [{ url: "/api/rest" }],
     security: [{ sessionCookie: [] }],
     components: {
       securitySchemes: {

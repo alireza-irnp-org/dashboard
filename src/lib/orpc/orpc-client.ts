@@ -21,11 +21,11 @@ const link = new RPCLink({
     const { headers } = await import('next/headers')
     return await headers()
   },
-  interceptors: [
-    onError((error) => {
-      console.error(error)
-    })
-  ],
+  // interceptors: [
+  //   onError((error) => {
+  //     console.error(error)
+  //   })
+  // ],
 });
 
 export const orpc: RouterClient<AppRouter> = createORPCClient(link)
