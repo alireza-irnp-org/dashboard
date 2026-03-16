@@ -2,9 +2,13 @@ import { auth } from "@/lib/auth/auth";
 import { appRouter } from "@/lib/orpc/router";
 import { RPCHandler } from "@orpc/server/fetch";
 import { onError } from '@orpc/server'
+import { CORSPlugin } from '@orpc/server/plugins'
 
 
 const handler = new RPCHandler(appRouter, {
+  plugins: [
+    new CORSPlugin()
+  ],
   interceptors: [
     onError((error) => {
       console.error(error)

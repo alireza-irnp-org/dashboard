@@ -13,23 +13,26 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { orpcUtils } from "@/lib/orpc/orpc-client";
 import { useLinkSocial, useUnlinkSocial } from "@/lib/auth/hooks/use-auth";
-import { zoomKeys, useZoomMeetings, useZoomProfile, useZoomStatus } from "@/lib/zoom/use-zoom";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { Calendar, Clock, ExternalLink, Link2, Link2Off, Users, Video } from "lucide-react";
 import { toast } from "sonner";
 
 export function ZoomCard() {
-  const { data: statusData, isLoading: statusLoading } = useZoomStatus();
+  const { data: statusData, isLoading: statusLoading } = useQuery(
+    orpcUtils.zoom.status.queryOptions()
+  );
   const isConnected = statusData?.connected ?? false;
 
-  const { data: profileData } = useZoomProfile({ enabled: isConnected });
+  const { data: profileData } = useQuery(
+    orpcUtils.zoom.profile.queryOptions({ enabled: isConnected })
+  );
 
-  const {
-    data: meetingsData,
-    isLoading: meetingsLoading,
-  } = useZoomMeetings("upcoming", { enabled: isConnected });
+  const { data: meetingsData, isLoading: meetingsLoading } = useQuery(
+    orpcUtils.zoom.meetings.list.queryOptions({ input: { type: "upcoming" }, enabled: isConnected })
+  );
 
   const queryClient = useQueryClient();
   const linkSocial = useLinkSocial();
@@ -46,8 +49,8 @@ export function ZoomCard() {
   function handleDisconnect() {
     unlinkSocial.mutate("zoom", {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: zoomKeys.status() });
-        queryClient.removeQueries({ queryKey: zoomKeys.meetings() });
+        queryClient.invalidateQueries({ queryKey: orpcUtils.zoom.status.key() });
+        queryClient.removeQueries({ queryKey: orpcUtils.zoom.meetings.key() });
         toast.success("Zoom disconnected.");
       },
       onError: () => {
