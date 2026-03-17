@@ -1,5 +1,5 @@
 import { ORPCError, os } from "@orpc/server";
-import { getZoomClient, type ZoomClient } from "@/lib/zoom/zoom-client";
+import { getZoomClient, type ZoomClient } from "@/lib/sdks/zoom/zoom-client";
 import type { Context, Session } from "./context";
 
 export const pub = os.$context<Context>();

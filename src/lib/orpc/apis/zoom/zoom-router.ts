@@ -1,6 +1,6 @@
 import { z } from "zod/v3";
-import { authed, zoomAuthed } from "../base";
-import { isZoomConnected } from "@/lib/zoom/zoom-client";
+import { authed, zoomAuthed } from "@/lib/orpc/base";
+import { isZoomConnected } from "@/lib/sdks/zoom/zoom-client";
 import {
     CreateMeetingInputSchema,
     ListMeetingsInputSchema,

@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth/auth";
-import { getZoomClient } from "@/lib/zoom/zoom-client";
+import { getZoomClient } from "@/lib/sdks/zoom/zoom-client";
 
 type Params = { params: Promise<{ meetingId: string }> };
 

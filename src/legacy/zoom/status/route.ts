@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth/auth";
-import { isZoomConnected } from "@/lib/zoom/zoom-client";
+import { isZoomConnected } from "@/lib/sdks/zoom/zoom-client";
 
 export async function GET(req: Request) {
   const session = await auth.api.getSession({ headers: req.headers });
