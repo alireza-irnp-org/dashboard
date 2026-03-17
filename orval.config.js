@@ -14,8 +14,8 @@ export default defineConfig({
             prettier: true,
             override: {
                 mutator: {
-                    path: './src/lib/orval-client.ts',
-                    name: 'customFetch',
+                    path: './src/lib/orval-client-fetch.ts',
+                    name: 'customInstance',
                 },
             },
         },

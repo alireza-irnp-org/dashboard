@@ -6,10 +6,10 @@ const BASE_URL =
 /**
  * Custom fetch mutator for all orval-generated API calls.
  *
- * Orval calls: customFetch<T>(url: string, options?: RequestInit)
+ * Orval calls: customInstance<T>(url: string, options?: RequestInit)
  * and expects Promise<T> where T = { data: Schema; status: number; headers: Headers }
  */
-export const customFetch = async <T>(
+export const customInstance = async <T>(
   url: string,
   options?: RequestInit,
 ): Promise<T> => {

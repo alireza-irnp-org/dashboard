@@ -31,7 +31,7 @@ import type {
   ZoomMeetingsUpdateBody,
 } from "../model";
 
-import { customFetch } from "../../lib/orval-client";
+import { customInstance } from "../../lib/orval-client-fetch";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
@@ -68,10 +68,13 @@ export const zoomMeetingsList = async (
   params?: ZoomMeetingsListParams,
   options?: RequestInit,
 ): Promise<zoomMeetingsListResponse> => {
-  return customFetch<zoomMeetingsListResponse>(getZoomMeetingsListUrl(params), {
-    ...options,
-    method: "GET",
-  });
+  return customInstance<zoomMeetingsListResponse>(
+    getZoomMeetingsListUrl(params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 };
 
 export const getZoomMeetingsListQueryKey = (
@@ -93,7 +96,7 @@ export const getZoomMeetingsListQueryOptions = <
         TData
       >
     >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
@@ -138,7 +141,7 @@ export function useZoomMeetingsList<
         >,
         "initialData"
       >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -165,7 +168,7 @@ export function useZoomMeetingsList<
         >,
         "initialData"
       >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -184,7 +187,7 @@ export function useZoomMeetingsList<
         TData
       >
     >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -207,7 +210,7 @@ export function useZoomMeetingsList<
         TData
       >
     >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -245,12 +248,15 @@ export const zoomMeetingsCreate = async (
   zoomMeetingsCreateBody: ZoomMeetingsCreateBody,
   options?: RequestInit,
 ): Promise<zoomMeetingsCreateResponse> => {
-  return customFetch<zoomMeetingsCreateResponse>(getZoomMeetingsCreateUrl(), {
-    ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(zoomMeetingsCreateBody),
-  });
+  return customInstance<zoomMeetingsCreateResponse>(
+    getZoomMeetingsCreateUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(zoomMeetingsCreateBody),
+    },
+  );
 };
 
 export const getZoomMeetingsCreateMutationOptions = <
@@ -263,7 +269,7 @@ export const getZoomMeetingsCreateMutationOptions = <
     { data: ZoomMeetingsCreateBody },
     TContext
   >;
-  request?: SecondParameter<typeof customFetch>;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof zoomMeetingsCreate>>,
   TError,
@@ -308,7 +314,7 @@ export const useZoomMeetingsCreate = <TError = unknown, TContext = unknown>(
       { data: ZoomMeetingsCreateBody },
       TContext
     >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -343,7 +349,7 @@ export const zoomMeetingsGet = async (
   meetingId: string,
   options?: RequestInit,
 ): Promise<zoomMeetingsGetResponse> => {
-  return customFetch<zoomMeetingsGetResponse>(
+  return customInstance<zoomMeetingsGetResponse>(
     getZoomMeetingsGetUrl(meetingId),
     {
       ...options,
@@ -369,7 +375,7 @@ export const getZoomMeetingsGetQueryOptions = <
         TData
       >
     >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
@@ -419,7 +425,7 @@ export function useZoomMeetingsGet<
         >,
         "initialData"
       >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -446,7 +452,7 @@ export function useZoomMeetingsGet<
         >,
         "initialData"
       >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -465,7 +471,7 @@ export function useZoomMeetingsGet<
         TData
       >
     >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -488,7 +494,7 @@ export function useZoomMeetingsGet<
         TData
       >
     >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -527,7 +533,7 @@ export const zoomMeetingsUpdate = async (
   zoomMeetingsUpdateBody?: ZoomMeetingsUpdateBody,
   options?: RequestInit,
 ): Promise<zoomMeetingsUpdateResponse> => {
-  return customFetch<zoomMeetingsUpdateResponse>(
+  return customInstance<zoomMeetingsUpdateResponse>(
     getZoomMeetingsUpdateUrl(meetingId),
     {
       ...options,
@@ -548,7 +554,7 @@ export const getZoomMeetingsUpdateMutationOptions = <
     { meetingId: string; data: ZoomMeetingsUpdateBody },
     TContext
   >;
-  request?: SecondParameter<typeof customFetch>;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof zoomMeetingsUpdate>>,
   TError,
@@ -593,7 +599,7 @@ export const useZoomMeetingsUpdate = <TError = unknown, TContext = unknown>(
       { meetingId: string; data: ZoomMeetingsUpdateBody },
       TContext
     >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -630,7 +636,7 @@ export const zoomMeetingsDelete = async (
   zoomMeetingsDeleteBody?: ZoomMeetingsDeleteBody,
   options?: RequestInit,
 ): Promise<zoomMeetingsDeleteResponse> => {
-  return customFetch<zoomMeetingsDeleteResponse>(
+  return customInstance<zoomMeetingsDeleteResponse>(
     getZoomMeetingsDeleteUrl(meetingId),
     {
       ...options,
@@ -651,7 +657,7 @@ export const getZoomMeetingsDeleteMutationOptions = <
     { meetingId: string; data: ZoomMeetingsDeleteBody },
     TContext
   >;
-  request?: SecondParameter<typeof customFetch>;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof zoomMeetingsDelete>>,
   TError,
@@ -696,7 +702,7 @@ export const useZoomMeetingsDelete = <TError = unknown, TContext = unknown>(
       { meetingId: string; data: ZoomMeetingsDeleteBody },
       TContext
     >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<

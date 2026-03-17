@@ -20,7 +20,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import type { ZoomProfile200, ZoomStatus200 } from "../model";
 
-import { customFetch } from "../../lib/orval-client";
+import { customInstance } from "../../lib/orval-client-fetch";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
@@ -44,7 +44,7 @@ export const getZoomStatusUrl = () => {
 export const zoomStatus = async (
   options?: RequestInit,
 ): Promise<zoomStatusResponse> => {
-  return customFetch<zoomStatusResponse>(getZoomStatusUrl(), {
+  return customInstance<zoomStatusResponse>(getZoomStatusUrl(), {
     ...options,
     method: "GET",
   });
@@ -61,7 +61,7 @@ export const getZoomStatusQueryOptions = <
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof zoomStatus>>, TError, TData>
   >;
-  request?: SecondParameter<typeof customFetch>;
+  request?: SecondParameter<typeof customInstance>;
 }) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -99,7 +99,7 @@ export function useZoomStatus<
         >,
         "initialData"
       >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -121,7 +121,7 @@ export function useZoomStatus<
         >,
         "initialData"
       >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -135,7 +135,7 @@ export function useZoomStatus<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof zoomStatus>>, TError, TData>
     >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -153,7 +153,7 @@ export function useZoomStatus<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof zoomStatus>>, TError, TData>
     >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -189,7 +189,7 @@ export const getZoomProfileUrl = () => {
 export const zoomProfile = async (
   options?: RequestInit,
 ): Promise<zoomProfileResponse> => {
-  return customFetch<zoomProfileResponse>(getZoomProfileUrl(), {
+  return customInstance<zoomProfileResponse>(getZoomProfileUrl(), {
     ...options,
     method: "GET",
   });
@@ -206,7 +206,7 @@ export const getZoomProfileQueryOptions = <
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof zoomProfile>>, TError, TData>
   >;
-  request?: SecondParameter<typeof customFetch>;
+  request?: SecondParameter<typeof customInstance>;
 }) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -244,7 +244,7 @@ export function useZoomProfile<
         >,
         "initialData"
       >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -266,7 +266,7 @@ export function useZoomProfile<
         >,
         "initialData"
       >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -280,7 +280,7 @@ export function useZoomProfile<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof zoomProfile>>, TError, TData>
     >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -298,7 +298,7 @@ export function useZoomProfile<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof zoomProfile>>, TError, TData>
     >;
-    request?: SecondParameter<typeof customFetch>;
+    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
