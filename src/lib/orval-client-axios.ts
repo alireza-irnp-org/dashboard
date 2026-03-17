@@ -1,12 +1,10 @@
 import { authClient } from "@/lib/auth/auth-client";
 import Axios, { type AxiosError, type AxiosRequestConfig } from "axios";
 
-const BASE_URL =
-  typeof window !== "undefined" ? "" : (process.env.NEXT_PUBLIC_APP_URL ?? "");
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL;
 
 export const AXIOS_INSTANCE = Axios.create({
-  // baseURL: BASE_URL,
-  baseURL: "http://localhost:3000",
+  baseURL: BASE_URL,
   withCredentials: true,
 });
 
