@@ -20,7 +20,7 @@ async function handleRequest(req: Request) {
   const session = await auth.api.getSession({ headers: req.headers });
 
   const { matched, response } = await handler.handle(req, {
-    prefix: "/api/rest",
+    prefix: "/api/v1/rest",
     context: { session, headers: req.headers },
   });
 

@@ -1,6 +1,7 @@
 "use client";
 
-import { useZoomStatus } from "@/orval-api/zoom/zoom";
+import { useZoomStatus } from "@/orval/hooks/zoom/zoom";
+
 
 export default function OrvalTestPage() {
   const { data, isLoading, isError, error } = useZoomStatus();

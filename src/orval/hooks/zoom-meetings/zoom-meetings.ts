@@ -29,9 +29,9 @@ import type {
   ZoomMeetingsList200,
   ZoomMeetingsListParams,
   ZoomMeetingsUpdateBody,
-} from "../model";
+} from "../../model";
 
-import { customInstance } from "../../lib/orval-client-fetch";
+import { customInstance } from "../../../lib/orval-clients/orval-client-fetch";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
@@ -60,8 +60,8 @@ export const getZoomMeetingsListUrl = (params?: ZoomMeetingsListParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `/api/rest/zoom/meetings?${stringifiedParams}`
-    : `/api/rest/zoom/meetings`;
+    ? `https://96de-2001-569-7bfc-3a00-6855-cddd-a6f0-777f.ngrok-free.app/api/v1/rest/zoom/meetings?${stringifiedParams}`
+    : `https://96de-2001-569-7bfc-3a00-6855-cddd-a6f0-777f.ngrok-free.app/api/v1/rest/zoom/meetings`;
 };
 
 export const zoomMeetingsList = async (
@@ -80,7 +80,10 @@ export const zoomMeetingsList = async (
 export const getZoomMeetingsListQueryKey = (
   params?: ZoomMeetingsListParams,
 ) => {
-  return [`/api/rest/zoom/meetings`, ...(params ? [params] : [])] as const;
+  return [
+    `https://96de-2001-569-7bfc-3a00-6855-cddd-a6f0-777f.ngrok-free.app/api/v1/rest/zoom/meetings`,
+    ...(params ? [params] : []),
+  ] as const;
 };
 
 export const getZoomMeetingsListQueryOptions = <
@@ -133,14 +136,14 @@ export function useZoomMeetingsList<
         TData
       >
     > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof zoomMeetingsList>>,
-          TError,
-          Awaited<ReturnType<typeof zoomMeetingsList>>
-        >,
-        "initialData"
-      >;
+    Pick<
+      DefinedInitialDataOptions<
+        Awaited<ReturnType<typeof zoomMeetingsList>>,
+        TError,
+        Awaited<ReturnType<typeof zoomMeetingsList>>
+      >,
+      "initialData"
+    >;
     request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
@@ -160,14 +163,14 @@ export function useZoomMeetingsList<
         TData
       >
     > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof zoomMeetingsList>>,
-          TError,
-          Awaited<ReturnType<typeof zoomMeetingsList>>
-        >,
-        "initialData"
-      >;
+    Pick<
+      UndefinedInitialDataOptions<
+        Awaited<ReturnType<typeof zoomMeetingsList>>,
+        TError,
+        Awaited<ReturnType<typeof zoomMeetingsList>>
+      >,
+      "initialData"
+    >;
     request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
@@ -241,7 +244,7 @@ export type zoomMeetingsCreateResponseSuccess =
 export type zoomMeetingsCreateResponse = zoomMeetingsCreateResponseSuccess;
 
 export const getZoomMeetingsCreateUrl = () => {
-  return `/api/rest/zoom/meetings`;
+  return `https://96de-2001-569-7bfc-3a00-6855-cddd-a6f0-777f.ngrok-free.app/api/v1/rest/zoom/meetings`;
 };
 
 export const zoomMeetingsCreate = async (
@@ -342,7 +345,7 @@ export type zoomMeetingsGetResponseSuccess = zoomMeetingsGetResponse200 & {
 export type zoomMeetingsGetResponse = zoomMeetingsGetResponseSuccess;
 
 export const getZoomMeetingsGetUrl = (meetingId: string) => {
-  return `/api/rest/zoom/meetings/${meetingId}`;
+  return `https://96de-2001-569-7bfc-3a00-6855-cddd-a6f0-777f.ngrok-free.app/api/v1/rest/zoom/meetings/${meetingId}`;
 };
 
 export const zoomMeetingsGet = async (
@@ -359,7 +362,9 @@ export const zoomMeetingsGet = async (
 };
 
 export const getZoomMeetingsGetQueryKey = (meetingId: string) => {
-  return [`/api/rest/zoom/meetings/${meetingId}`] as const;
+  return [
+    `https://96de-2001-569-7bfc-3a00-6855-cddd-a6f0-777f.ngrok-free.app/api/v1/rest/zoom/meetings/${meetingId}`,
+  ] as const;
 };
 
 export const getZoomMeetingsGetQueryOptions = <
@@ -417,14 +422,14 @@ export function useZoomMeetingsGet<
         TData
       >
     > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof zoomMeetingsGet>>,
-          TError,
-          Awaited<ReturnType<typeof zoomMeetingsGet>>
-        >,
-        "initialData"
-      >;
+    Pick<
+      DefinedInitialDataOptions<
+        Awaited<ReturnType<typeof zoomMeetingsGet>>,
+        TError,
+        Awaited<ReturnType<typeof zoomMeetingsGet>>
+      >,
+      "initialData"
+    >;
     request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
@@ -444,14 +449,14 @@ export function useZoomMeetingsGet<
         TData
       >
     > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof zoomMeetingsGet>>,
-          TError,
-          Awaited<ReturnType<typeof zoomMeetingsGet>>
-        >,
-        "initialData"
-      >;
+    Pick<
+      UndefinedInitialDataOptions<
+        Awaited<ReturnType<typeof zoomMeetingsGet>>,
+        TError,
+        Awaited<ReturnType<typeof zoomMeetingsGet>>
+      >,
+      "initialData"
+    >;
     request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
@@ -525,7 +530,7 @@ export type zoomMeetingsUpdateResponseSuccess =
 export type zoomMeetingsUpdateResponse = zoomMeetingsUpdateResponseSuccess;
 
 export const getZoomMeetingsUpdateUrl = (meetingId: string) => {
-  return `/api/rest/zoom/meetings/${meetingId}`;
+  return `https://96de-2001-569-7bfc-3a00-6855-cddd-a6f0-777f.ngrok-free.app/api/v1/rest/zoom/meetings/${meetingId}`;
 };
 
 export const zoomMeetingsUpdate = async (
@@ -628,7 +633,7 @@ export type zoomMeetingsDeleteResponseSuccess =
 export type zoomMeetingsDeleteResponse = zoomMeetingsDeleteResponseSuccess;
 
 export const getZoomMeetingsDeleteUrl = (meetingId: string) => {
-  return `/api/rest/zoom/meetings/${meetingId}`;
+  return `https://96de-2001-569-7bfc-3a00-6855-cddd-a6f0-777f.ngrok-free.app/api/v1/rest/zoom/meetings/${meetingId}`;
 };
 
 export const zoomMeetingsDelete = async (

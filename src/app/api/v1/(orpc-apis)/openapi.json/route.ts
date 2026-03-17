@@ -13,7 +13,7 @@ export async function GET() {
       version: "1.0.0",
       description: "Internal API for the personal dashboard application.",
     },
-    servers: [{ url: "/api/rest" }],
+    servers: [{ url: process.env.NEXT_PUBLIC_APP_URL + "/api/v1/rest" }],
     security: [{ sessionCookie: [] }],
     components: {
       securitySchemes: {

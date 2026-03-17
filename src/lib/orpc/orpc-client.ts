@@ -5,7 +5,7 @@ import { createRouterUtils } from "@orpc/tanstack-query";
 import type { AppRouter } from "./router";
 
 const link = new RPCLink({
-  url: `${typeof window !== 'undefined' ? window.location.origin : ""}/api/orpc`,
+  url: `${typeof window !== 'undefined' ? window.location.origin : ""}/api/v1/orpc`,
   // url: `${typeof window !== "undefined" ? "" : (process.env.NEXT_PUBLIC_APP_URL ?? "")}/api/orpc`,
   // url: () => {
   //   if (typeof window === "undefined") {

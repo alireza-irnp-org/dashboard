@@ -18,9 +18,9 @@ import type {
 } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 
-import type { ZoomProfile200, ZoomStatus200 } from "../model";
+import type { ZoomProfile200, ZoomStatus200 } from "../../model";
 
-import { customInstance } from "../../lib/orval-client-fetch";
+import { customInstance } from "../../../lib/orval-clients/orval-client-fetch";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
@@ -38,7 +38,7 @@ export type zoomStatusResponseSuccess = zoomStatusResponse200 & {
 export type zoomStatusResponse = zoomStatusResponseSuccess;
 
 export const getZoomStatusUrl = () => {
-  return `/api/rest/zoom/status`;
+  return `https://96de-2001-569-7bfc-3a00-6855-cddd-a6f0-777f.ngrok-free.app/api/v1/rest/zoom/status`;
 };
 
 export const zoomStatus = async (
@@ -51,7 +51,9 @@ export const zoomStatus = async (
 };
 
 export const getZoomStatusQueryKey = () => {
-  return [`/api/rest/zoom/status`] as const;
+  return [
+    `https://96de-2001-569-7bfc-3a00-6855-cddd-a6f0-777f.ngrok-free.app/api/v1/rest/zoom/status`,
+  ] as const;
 };
 
 export const getZoomStatusQueryOptions = <
@@ -91,14 +93,14 @@ export function useZoomStatus<
     query: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof zoomStatus>>, TError, TData>
     > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof zoomStatus>>,
-          TError,
-          Awaited<ReturnType<typeof zoomStatus>>
-        >,
-        "initialData"
-      >;
+    Pick<
+      DefinedInitialDataOptions<
+        Awaited<ReturnType<typeof zoomStatus>>,
+        TError,
+        Awaited<ReturnType<typeof zoomStatus>>
+      >,
+      "initialData"
+    >;
     request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
@@ -113,14 +115,14 @@ export function useZoomStatus<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof zoomStatus>>, TError, TData>
     > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof zoomStatus>>,
-          TError,
-          Awaited<ReturnType<typeof zoomStatus>>
-        >,
-        "initialData"
-      >;
+    Pick<
+      UndefinedInitialDataOptions<
+        Awaited<ReturnType<typeof zoomStatus>>,
+        TError,
+        Awaited<ReturnType<typeof zoomStatus>>
+      >,
+      "initialData"
+    >;
     request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
@@ -183,7 +185,7 @@ export type zoomProfileResponseSuccess = zoomProfileResponse200 & {
 export type zoomProfileResponse = zoomProfileResponseSuccess;
 
 export const getZoomProfileUrl = () => {
-  return `/api/rest/zoom/profile`;
+  return `https://96de-2001-569-7bfc-3a00-6855-cddd-a6f0-777f.ngrok-free.app/api/v1/rest/zoom/profile`;
 };
 
 export const zoomProfile = async (
@@ -196,7 +198,9 @@ export const zoomProfile = async (
 };
 
 export const getZoomProfileQueryKey = () => {
-  return [`/api/rest/zoom/profile`] as const;
+  return [
+    `https://96de-2001-569-7bfc-3a00-6855-cddd-a6f0-777f.ngrok-free.app/api/v1/rest/zoom/profile`,
+  ] as const;
 };
 
 export const getZoomProfileQueryOptions = <
@@ -236,14 +240,14 @@ export function useZoomProfile<
     query: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof zoomProfile>>, TError, TData>
     > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof zoomProfile>>,
-          TError,
-          Awaited<ReturnType<typeof zoomProfile>>
-        >,
-        "initialData"
-      >;
+    Pick<
+      DefinedInitialDataOptions<
+        Awaited<ReturnType<typeof zoomProfile>>,
+        TError,
+        Awaited<ReturnType<typeof zoomProfile>>
+      >,
+      "initialData"
+    >;
     request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
@@ -258,14 +262,14 @@ export function useZoomProfile<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof zoomProfile>>, TError, TData>
     > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof zoomProfile>>,
-          TError,
-          Awaited<ReturnType<typeof zoomProfile>>
-        >,
-        "initialData"
-      >;
+    Pick<
+      UndefinedInitialDataOptions<
+        Awaited<ReturnType<typeof zoomProfile>>,
+        TError,
+        Awaited<ReturnType<typeof zoomProfile>>
+      >,
+      "initialData"
+    >;
     request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,

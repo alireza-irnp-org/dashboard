@@ -1,6 +1,6 @@
 import { authClient } from "@/lib/auth/auth-client";
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL;
+// const BASE_URL = process.env.NEXT_PUBLIC_APP_URL;
 
 /**
  * Custom fetch mutator for all orval-generated API calls.
@@ -15,7 +15,7 @@ export const customInstance = async <T>(
   const { data: session } = await authClient.getSession();
   const token = session?.session?.token;
 
-  const res = await fetch(`${BASE_URL}${url}`, {
+  const res = await fetch(`${url}`, {
     ...options,
     credentials: "include",
     headers: {

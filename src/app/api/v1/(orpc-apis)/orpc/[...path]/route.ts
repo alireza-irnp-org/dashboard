@@ -20,7 +20,7 @@ async function handleRequest(req: Request) {
   const session = await auth.api.getSession({ headers: req.headers });
 
   const { matched, response } = await handler.handle(req, {
-    prefix: "/api/orpc",
+    prefix: "/api/v1/orpc",
     context: { session, headers: req.headers },
   });
 

@@ -1,3 +1,5 @@
+const openAPISchemaURL = "/api/v1/openapi.json";
+
 export function GET() {
   const html = `<!doctype html>
 <html>
@@ -9,7 +11,7 @@ export function GET() {
   <body>
     <script
       id="api-reference"
-      data-url="/api/openapi.json"
+      data-url=${openAPISchemaURL}
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
   </body>
