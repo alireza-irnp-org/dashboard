@@ -238,7 +238,23 @@ export const Assistant = () => {
 
       return useChatRuntime({
         sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
-        transport: new AssistantChatTransport({ api: "/api/chat" }),
+        transport: new AssistantChatTransport({
+          api: "/api/chat",
+          // body is async so the transport awaits it before sending.
+          // For a new thread, remoteId is undefined until initialize() resolves.
+          // We subscribe to state changes and wait for remoteId to appear,
+          // which lets initialize() complete before the HTTP request fires.
+          body: async () => {
+            const item = innerAui.threadListItem();
+            // For existing threads remoteId is already set; for new threads we call
+            // initialize() which creates the thread and returns its remoteId.
+            // initialize() is idempotent — the framework also calls it, but both
+            // calls share the same underlying promise so no duplicate threads are created.
+            const remoteId =
+              item.getState().remoteId ?? (await item.initialize()).remoteId;
+            return remoteId ? { threadId: remoteId } : {};
+          },
+        }),
         adapters: {
           history: historyAdapter,
           dictation: new WebSpeechDictationAdapter({
